@@ -42,7 +42,7 @@
 	const cardBg = asset('776442682_1588100949420590_8353220821612154198_n.jpg');
 	/** @param {PointerEvent} event */
 	const handleCardPointerMove = (event) => {
-		if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('low-power')) return;
 		const card = event.currentTarget;
 		if (!(card instanceof HTMLElement)) return;
 		const bounds = card.getBoundingClientRect();
@@ -97,13 +97,18 @@
 			const { ScrollTrigger } = scrollTriggerModule;
 			gsap.registerPlugin(ScrollTrigger);
 		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const deviceMemory = Number(Reflect.get(navigator, 'deviceMemory') || 8);
+		const lowPowerDevice = (navigator.hardwareConcurrency || 8) <= 4 || deviceMemory <= 4;
 		const compactLayout = window.matchMedia('(max-width: 760px)').matches;
+		document.documentElement.classList.toggle('low-power', lowPowerDevice);
 		if (reduceMotion) return;
 		const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
 		intro.from('.hero-identity', { y: 45, opacity: 0, duration: 1 })
 			.from('.hero-portrait', { clipPath: 'inset(0 0 100% 0)', scale: 1.12, duration: 1.4 }, '-=.65');
 
-		gsap.to('.hero-slide img', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+		if (!lowPowerDevice) {
+			gsap.to('.hero-slide img', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+		}
 		// Give the vertical page scroll a layered, camera-like depth. Positive
 		// values drift down as the section passes; negative values drift up.
 		/** @type {Array<[string, number]>} */
@@ -114,18 +119,20 @@
 			['.large-copy', -0.06],
 			['.contact h2', -0.08]
 		];
-		parallaxLayers.forEach(([selector, speed]) => {
-			const element = document.querySelector(selector);
-			if (!element) return;
-			const distance = () => window.innerHeight * speed;
-			gsap.fromTo(element, { y: () => -distance() }, { y: () => distance(), ease: 'none', scrollTrigger: {
-				trigger: element,
-				start: 'top bottom',
-				end: 'bottom top',
-				scrub: true,
-				invalidateOnRefresh: true
-			} });
-		});
+		if (!lowPowerDevice) {
+			parallaxLayers.forEach(([selector, speed]) => {
+				const element = document.querySelector(selector);
+				if (!element) return;
+				const distance = () => window.innerHeight * speed;
+				gsap.fromTo(element, { y: () => -distance() }, { y: () => distance(), ease: 'none', scrollTrigger: {
+					trigger: element,
+					start: 'top bottom',
+					end: 'bottom top',
+					scrub: true,
+					invalidateOnRefresh: true
+				} });
+			});
+		}
 		const ambientBackground = document.querySelector('.ambient-background');
 		if (ambientBackground) {
 			const sections = gsap.utils.toArray('.chapter');
@@ -150,6 +157,9 @@
 		}
 		const aboutRain = document.querySelector('.about-rain');
 		if (aboutRain) {
+			if (lowPowerDevice) {
+				gsap.set(aboutRain, { autoAlpha: 0 });
+			} else {
 			// The rain is strongest while the about section is settled in view,
 			// then dissolves before the next chapter takes over.
 			gsap.set(aboutRain, { autoAlpha: 0 });
@@ -165,6 +175,7 @@
 					gsap.set(aboutRain, { autoAlpha: Math.min(fadeIn, fadeOut) });
 				}
 			});
+			}
 		}
 		const slides = gsap.utils.toArray('.hero-slide');
 		let activeSlide = 0;
@@ -189,7 +200,7 @@
 		/** @type {HTMLElement | null} */
 		const firstReelCard = document.querySelector('.reel-card');
 		if (reelTrack && reelIntro && firstReelCard && !compactLayout) {
-			if (rippleField) gsap.set(rippleField, { autoAlpha: 0 });
+			if (rippleField) gsap.set(rippleField, { opacity: 0 });
 			// Stop with a large, intentional landing gap after the final frame.
 			// This is part of the translate distance, so the last image remains
 			// fully visible instead of being pushed off the right edge.
@@ -222,6 +233,16 @@
 					end: travelStart + (totalDistance ? Math.min(1, (overlapEnd + overlap * 0.1) / totalDistance) * travelSpan : travelSpan)
 				};
 			};
+			let cachedFadeStart = 0;
+			let cachedFadeEnd = 1;
+			const refreshFadeBounds = () => {
+				const bounds = fadeBounds();
+				cachedFadeStart = bounds.start;
+				cachedFadeEnd = bounds.end;
+			};
+			const setIntroOpacity = gsap.quickSetter(reelIntro, 'opacity');
+			const setRippleOpacity = rippleField ? gsap.quickSetter(rippleField, 'opacity') : null;
+			const setKeepColor = reelKeep ? gsap.quickSetter(reelKeep, 'color') : null;
 			const reelScrollTrigger = {
 				trigger: '.work-reel',
 				start: 'top top',
@@ -230,33 +251,34 @@
 				anticipatePin: 1,
 				scrub: 1,
 				invalidateOnRefresh: true,
+				onRefresh: refreshFadeBounds,
 				/** @param {{ progress: number }} self */
 				onUpdate: (self) => {
 					const { progress } = self;
-					const { start, end } = fadeBounds();
-					const fade = Math.min(1, Math.max(0, (progress - start) / Math.max(0.001, end - start)));
-					gsap.set(reelIntro, { autoAlpha: 1 - fade });
-					if (rippleField) {
+					const fade = Math.min(1, Math.max(0, (progress - cachedFadeStart) / Math.max(0.001, cachedFadeEnd - cachedFadeStart)));
+					setIntroOpacity(1 - fade);
+					if (setRippleOpacity) {
 						// Bring the ripples in after the gallery title clears, then remove
 						// them before the contact section enters the viewport.
-						const rippleStart = Math.min(0.88, end + 0.04);
+						const rippleStart = Math.min(0.88, cachedFadeEnd + 0.04);
 						const rippleEnd = Math.max(rippleStart + 0.08, 0.94);
 						const rippleIn = Math.min(1, Math.max(0, (progress - rippleStart) / 0.08));
 						const rippleOut = Math.min(1, Math.max(0, (rippleEnd - progress) / 0.08));
-						gsap.set(rippleField, { autoAlpha: rippleIn * rippleOut });
+						setRippleOpacity(rippleIn * rippleOut);
 					}
-					if (reelKeep) {
+					if (setKeepColor) {
 						// Start shifting as soon as the pinned section begins, and finish
 						// the color change before the copy starts fading.
-						const colorProgress = Math.min(1, Math.max(0, progress / Math.max(0.001, start)));
+						const colorProgress = Math.min(1, Math.max(0, progress / Math.max(0.001, cachedFadeStart)));
 						const deepBlue = gsap.utils.interpolate('#4ca6d8', '#2d6f98', colorProgress);
-						gsap.set(reelKeep, { color: deepBlue });
+						setKeepColor(deepBlue);
 					}
 				}
 			};
+			refreshFadeBounds();
 			const reelTimeline = gsap.timeline({ scrollTrigger: reelScrollTrigger });
 			reelTimeline.to({}, { duration: () => introPause() / Math.max(1, distance()) })
-				.to(reelTrack, { x: () => -distance(), duration: 1, ease: 'none' });
+				.to(reelTrack, { x: () => -distance(), duration: 1, ease: 'none', force3D: true });
 		}
 			cleanup = () => {
 				slideshow.kill();
@@ -292,7 +314,7 @@
 					<p class="hero-role">Photographer</p>
 				</div>
 			</div>
-			<div class="hero-portrait" aria-label="Selected photography slideshow">{#each heroSlides as slide}<div class="hero-slide"><img src={asset(slide[0])} alt={slide[1]} /></div>{/each}</div>
+			<div class="hero-portrait" aria-label="Selected photography slideshow">{#each heroSlides as slide, i}<div class="hero-slide"><img src={asset(slide[0])} alt={slide[1]} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>{/each}</div>
 		</section>
 
 		<div class="rain-break" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
@@ -312,7 +334,7 @@
 		<section class="work-reel chapter" id="work">
 			<div class="contact-puddles work-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i></span><span class="puddle puddle-b"><i></i></span><span class="puddle puddle-c"><i></i></span><span class="puddle puddle-d"><i></i></span></div>
 			<div class="reel-intro"><p class="eyebrow"><span>03</span> Selected work</p><h2>Frames<br /><em>worth<br />keeping.</em></h2><p class="reel-hint">Keep scrolling<br /><span>→</span></p></div>
-			<div class="reel-track">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading="eager" decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
+			<div class="reel-track">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading={i < 2 ? 'eager' : 'lazy'} decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
 		</section>
 
 		<section class="contact chapter" id="contact">
@@ -584,7 +606,7 @@
 		transform-origin:center;
 		animation:soft-ripple 9s cubic-bezier(.18,.56,.25,1) infinite;
 		will-change:transform,opacity;
-		filter:blur(.25px);
+		filter:none;
 	}
 	.contact-puddles .puddle-b{top:34%;right:5%;width:clamp(250px,31vw,530px);transform:none}
 	.contact-puddles .puddle-c{bottom:-1%;left:35%;width:clamp(220px,27vw,460px);transform:none}
@@ -598,10 +620,11 @@
 		mix-blend-mode:normal;
 	}
 	.work-reel > .reel-intro,.work-reel > .reel-track{position:relative;z-index:2}
+	.work-reel > .reel-track{will-change:transform}
 	.work-puddles .puddle{opacity:1}
 	.work-puddles .puddle{width:clamp(280px,32vw,620px)}
-	.work-puddles .puddle::before{background:#e6f8ff;box-shadow:0 0 18px rgba(173,231,255,.95)}
-	.work-puddles .puddle i:first-child{border:3px solid #8bdcff;animation-name:work-ripple;filter:drop-shadow(0 0 11px rgba(139,220,255,.82))}
+	.work-puddles .puddle::before{background:#e6f8ff}
+	.work-puddles .puddle i:first-child{border:2px solid #8bdcff;animation-name:work-ripple;filter:none}
 	@keyframes work-ripple{
 		0%{opacity:0;transform:scale(.04)}
 		6%{opacity:.55}
@@ -806,4 +829,11 @@
 	.card-face::after{background:radial-gradient(circle at var(--card-glare-x) var(--card-glare-y),rgba(255,255,255,.16),transparent 36%)}
 	.card-face > *{transform:translate3d(calc(var(--card-shift-x) * .25),calc(var(--card-shift-y) * .25),0);transition:transform .2s ease-out}
 	@media(prefers-reduced-motion:reduce){.business-card{transform:none;transition:none;will-change:auto}.card-face::before,.business-card:hover .card-face::before,.card-face > *{transform:none;transition:none}}
+	:global(.low-power) .work-puddles,
+	:global(.low-power) .about-rain,
+	:global(.low-power) .storm-rain,
+	:global(.low-power) .storm-flash{display:none!important}
+	:global(.low-power) .reel-photo img{transition:none;filter:none}
+	:global(.low-power) .reel-track{will-change:transform}
+	:global(.low-power) .business-card{will-change:auto;transition:none;filter:none}
 	</style>
