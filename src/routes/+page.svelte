@@ -1,7 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import { gsap } from 'gsap';
-	import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 	/** @param {string} filename */
 	const asset = (filename) => `/${encodeURIComponent(filename)}`;
@@ -25,7 +23,15 @@
 	const cardBg = asset('776442682_1588100949420590_8353220821612154198_n.jpg');
 
 	onMount(() => {
-		gsap.registerPlugin(ScrollTrigger);
+		/** @type {(() => void) | undefined} */
+		let cleanup;
+		let destroyed = false;
+
+		Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([gsapModule, scrollTriggerModule]) => {
+			if (destroyed) return;
+			const { gsap } = gsapModule;
+			const { ScrollTrigger } = scrollTriggerModule;
+			gsap.registerPlugin(ScrollTrigger);
 		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		if (reduceMotion) return;
 		const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
@@ -61,9 +67,15 @@
 			gsap.to(reelTrack, { x: () => -distance(), ease: 'none', scrollTrigger: { trigger: '.work-reel', start: 'top top', end: () => `+=${distance() + window.innerHeight * 0.7}`, pin: true, scrub: 1, invalidateOnRefresh: true } });
 		}
 		gsap.to('.contact-glow', { rotation: 360, duration: 22, repeat: -1, ease: 'none' });
+			cleanup = () => {
+				slideshow.kill();
+				ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+			};
+		});
+
 		return () => {
-			slideshow.kill();
-			ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+			destroyed = true;
+			cleanup?.();
 		};
 	});
 </script>
