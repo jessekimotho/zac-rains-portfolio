@@ -40,6 +40,38 @@
 	);
 	let cardFlipped = false;
 	const cardBg = asset('776442682_1588100949420590_8353220821612154198_n.jpg');
+	/** @param {PointerEvent} event */
+	const handleCardPointerMove = (event) => {
+		if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		const card = event.currentTarget;
+		if (!(card instanceof HTMLElement)) return;
+		const bounds = card.getBoundingClientRect();
+		const x = (event.clientX - bounds.left) / bounds.width;
+		const y = (event.clientY - bounds.top) / bounds.height;
+		const tiltX = (x - 0.5) * 10;
+		const tiltY = (0.5 - y) * 8;
+		const shiftX = (x - 0.5) * 18;
+		const shiftY = (y - 0.5) * 14;
+
+		card.style.setProperty('--card-tilt-x', `${tiltX}deg`);
+		card.style.setProperty('--card-tilt-y', `${tiltY}deg`);
+		card.style.setProperty('--card-shift-x', `${shiftX}px`);
+		card.style.setProperty('--card-shift-y', `${shiftY}px`);
+		card.style.setProperty('--card-glare-x', `${x * 100}%`);
+		card.style.setProperty('--card-glare-y', `${y * 100}%`);
+	};
+
+	/** @param {PointerEvent} event */
+	const resetCardPointer = (event) => {
+		const card = event.currentTarget;
+		if (!(card instanceof HTMLElement)) return;
+		card.style.removeProperty('--card-tilt-x');
+		card.style.removeProperty('--card-tilt-y');
+		card.style.removeProperty('--card-shift-x');
+		card.style.removeProperty('--card-shift-y');
+		card.style.removeProperty('--card-glare-x');
+		card.style.removeProperty('--card-glare-y');
+	};
 	/** @param {number} seed */
 	const seededRandom = (seed) => {
 		const value = Math.sin(seed * 12.9898) * 43758.5453;
@@ -153,8 +185,11 @@
 		/** @type {HTMLElement | null} */
 		const reelKeep = reelIntro ? reelIntro.querySelector('h2 em') : null;
 		/** @type {HTMLElement | null} */
+		const rippleField = document.querySelector('.work-puddles');
+		/** @type {HTMLElement | null} */
 		const firstReelCard = document.querySelector('.reel-card');
 		if (reelTrack && reelIntro && firstReelCard && !compactLayout) {
+			if (rippleField) gsap.set(rippleField, { autoAlpha: 0 });
 			// Stop with a large, intentional landing gap after the final frame.
 			// This is part of the translate distance, so the last image remains
 			// fully visible instead of being pushed off the right edge.
@@ -201,6 +236,15 @@
 					const { start, end } = fadeBounds();
 					const fade = Math.min(1, Math.max(0, (progress - start) / Math.max(0.001, end - start)));
 					gsap.set(reelIntro, { autoAlpha: 1 - fade });
+					if (rippleField) {
+						// Bring the ripples in after the gallery title clears, then remove
+						// them before the contact section enters the viewport.
+						const rippleStart = Math.min(0.88, end + 0.04);
+						const rippleEnd = Math.max(rippleStart + 0.08, 0.94);
+						const rippleIn = Math.min(1, Math.max(0, (progress - rippleStart) / 0.08));
+						const rippleOut = Math.min(1, Math.max(0, (rippleEnd - progress) / 0.08));
+						gsap.set(rippleField, { autoAlpha: rippleIn * rippleOut });
+					}
 					if (reelKeep) {
 						// Start shifting as soon as the pinned section begins, and finish
 						// the color change before the copy starts fading.
@@ -266,14 +310,14 @@
 		</section>
 
 		<section class="work-reel chapter" id="work">
+			<div class="contact-puddles work-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i></span><span class="puddle puddle-b"><i></i></span><span class="puddle puddle-c"><i></i></span><span class="puddle puddle-d"><i></i></span></div>
 			<div class="reel-intro"><p class="eyebrow"><span>03</span> Selected work</p><h2>Frames<br /><em>worth<br />keeping.</em></h2><p class="reel-hint">Keep scrolling<br /><span>→</span></p></div>
 			<div class="reel-track">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading="eager" decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
 		</section>
 
 		<section class="contact chapter" id="contact">
-			<div class="contact-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i></span><span class="puddle puddle-b"><i></i></span><span class="puddle puddle-c"><i></i></span><span class="puddle puddle-d"><i></i></span></div>
 			<div class="section-top"><p class="eyebrow"><span>04</span> Before the storm</p><span class="section-index">LET'S CONNECT</span></div>
-			<div class="contact-layout"><div><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a></div><button class="business-card" class:flipped={cardFlipped} onclick={() => (cardFlipped = !cardFlipped)} aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
+			<div class="contact-layout"><div><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a></div><button class="business-card" class:flipped={cardFlipped} onpointermove={handleCardPointerMove} onpointerleave={resetCardPointer} onclick={() => (cardFlipped = !cardFlipped)} aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
 				<span class="card-face card-front" style="--card-bg: url({cardBg})">
 					<span class="card-topline"><span>01 / PERSONAL CARD</span><span>EST. 2024</span></span>
 					<span class="card-brand">
@@ -548,6 +592,24 @@
 	.contact-puddles .puddle-b i:first-child,.contact-puddles .puddle-b::before{animation-delay:-4.5s}
 	.contact-puddles .puddle-c i:first-child,.contact-puddles .puddle-c::before{animation-delay:-2.7s}
 	.contact-puddles .puddle-d i:first-child,.contact-puddles .puddle-d::before{animation-delay:-6.6s}
+	.work-puddles{
+		z-index:1;
+		opacity:0;
+		mix-blend-mode:normal;
+	}
+	.work-reel > .reel-intro,.work-reel > .reel-track{position:relative;z-index:2}
+	.work-puddles .puddle{opacity:1}
+	.work-puddles .puddle{width:clamp(280px,32vw,620px)}
+	.work-puddles .puddle::before{background:#e6f8ff;box-shadow:0 0 18px rgba(173,231,255,.95)}
+	.work-puddles .puddle i:first-child{border:3px solid #8bdcff;animation-name:work-ripple;filter:drop-shadow(0 0 11px rgba(139,220,255,.82))}
+	@keyframes work-ripple{
+		0%{opacity:0;transform:scale(.04)}
+		6%{opacity:.55}
+		14%{opacity:1}
+		38%{opacity:.72}
+		68%{opacity:.3}
+		100%{opacity:0;transform:scale(1.08)}
+	}
 	@keyframes drop-point{
 		0%{opacity:.64;transform:scale(.4)}
 		8%{opacity:.5;transform:scale(1)}
@@ -721,4 +783,27 @@
 	@media(prefers-reduced-motion:reduce){
 		.about-rain__drop{animation:none}
 	}
+
+	/* Pointer depth for the contact card. The outer tilt leaves the existing
+	   front/back flip transforms untouched, while the layers drift at different
+	   speeds to create a small parallax effect. */
+	.business-card{
+		--card-tilt-x:0deg;
+		--card-tilt-y:0deg;
+		--card-shift-x:0px;
+		--card-shift-y:0px;
+		--card-glare-x:50%;
+		--card-glare-y:50%;
+		transform:perspective(1600px) rotateX(var(--card-tilt-y)) rotateY(var(--card-tilt-x)) translateZ(var(--card-lift,0px));
+		transform-style:preserve-3d;
+		transition:transform .2s cubic-bezier(.2,.75,.2,1),filter .35s ease;
+		will-change:transform;
+		touch-action:manipulation;
+	}
+	.business-card:hover{--card-lift:4px;filter:drop-shadow(0 34px 38px rgba(0,0,0,.32))}
+	.card-face::before{transform:translate3d(calc(var(--card-shift-x) * -0.55),calc(var(--card-shift-y) * -0.55),0) scale(1.04)}
+	.business-card:hover .card-face::before{transform:translate3d(calc(var(--card-shift-x) * -0.55),calc(var(--card-shift-y) * -0.55),0) scale(1.09)}
+	.card-face::after{background:radial-gradient(circle at var(--card-glare-x) var(--card-glare-y),rgba(255,255,255,.16),transparent 36%)}
+	.card-face > *{transform:translate3d(calc(var(--card-shift-x) * .25),calc(var(--card-shift-y) * .25),0);transition:transform .2s ease-out}
+	@media(prefers-reduced-motion:reduce){.business-card{transform:none;transition:none;will-change:auto}.card-face::before,.business-card:hover .card-face::before,.card-face > *{transform:none;transition:none}}
 	</style>
