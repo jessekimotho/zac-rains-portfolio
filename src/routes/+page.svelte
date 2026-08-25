@@ -48,10 +48,11 @@
 
 		Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([gsapModule, scrollTriggerModule]) => {
 			if (destroyed) return;
-			const { gsap } = gsapModule;
+		const { gsap } = gsapModule;
 			const { ScrollTrigger } = scrollTriggerModule;
 			gsap.registerPlugin(ScrollTrigger);
 		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		const compactLayout = window.matchMedia('(max-width: 760px)').matches;
 		if (reduceMotion) return;
 		const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
 		intro.from('.hero-identity', { y: 45, opacity: 0, duration: 1 })
@@ -120,7 +121,7 @@
 		const reelIntro = document.querySelector('.reel-intro');
 		/** @type {HTMLElement | null} */
 		const firstReelCard = document.querySelector('.reel-card');
-		if (reelTrack && reelIntro && firstReelCard) {
+		if (reelTrack && reelIntro && firstReelCard && !compactLayout) {
 			// Stop with a large, intentional landing gap after the final frame.
 			// This is part of the translate distance, so the last image remains
 			// fully visible instead of being pushed off the right edge.
@@ -511,4 +512,106 @@
 	@media(prefers-reduced-motion:reduce){.hero-portrait,.about h2,.about-portrait img,.large-copy,.contact-glow,.contact h2{will-change:auto}}
 	/* Let the horizontal reel follow the user's scroll position without snapping. */
 	@media(max-width:760px){.reel-track{scroll-snap-type:none}.reel-card,.reel-card.hero-card{scroll-snap-align:none;scroll-snap-stop:normal}}
+
+	/* Final responsive pass: these rules intentionally live last so the tablet and
+	   phone layouts are not overridden by the older desktop experiments above. */
+	:global(html){overflow-x:hidden}
+	:global(body){min-width:320px}
+	.section-top{gap:20px}
+	.section-index{white-space:nowrap}
+	.reel-track{-webkit-overflow-scrolling:touch;scrollbar-width:none}
+	.reel-track::-webkit-scrollbar{display:none}
+	.reel-card,.reel-card.hero-card{flex:0 0 auto}
+
+	@media(min-width:761px) and (max-width:1100px){
+		.hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,5vw,64px);padding:clamp(72px,10vh,112px) clamp(28px,7vw,72px);min-height:100vh}
+		.hero-identity{column-gap:clamp(12px,1.8vw,24px)}
+		.hero-mark{width:clamp(64px,8vw,96px)}
+		.hero-name{font-size:clamp(4.35rem,9vw,7.3rem)}
+		.hero-role{font-size:11px}
+		.hero-portrait{height:min(74vh,680px);min-height:440px}
+
+		.about{padding:clamp(88px,11vh,128px) clamp(28px,7vw,72px) 48px;min-height:auto}
+		.about-layout{margin-top:clamp(80px,11vh,132px);column-gap:clamp(28px,6vw,72px);row-gap:clamp(72px,12vh,132px)}
+		.about h2{font-size:clamp(5rem,11vw,8.5rem)}
+		.about-portrait{width:min(100%,340px)}
+		.about-text{max-width:460px;padding:0}
+		.large-copy{font-size:clamp(1.8rem,3vw,2.8rem)}
+		.about-text>p:not(.large-copy){font-size:14px;line-height:1.7}
+		.about-marquee{margin-top:clamp(140px,20vh,240px);margin-bottom:80px}
+
+		.work-reel{gap:clamp(32px,5vw,64px);padding-block:clamp(96px,13vh,150px)}
+		.reel-intro{flex-basis:clamp(250px,29vw,320px);padding-left:clamp(28px,7vw,72px)}
+		.reel-intro h2{font-size:clamp(4rem,7.2vw,6.6rem);margin-block:clamp(52px,8vh,84px) 42px}
+		.reel-track{gap:clamp(18px,2.6vw,28px);padding-right:clamp(32px,7vw,72px)}
+		.reel-card{width:clamp(260px,27vw,320px);min-width:clamp(260px,27vw,320px)}
+		.reel-card.hero-card{width:clamp(310px,33vw,380px);min-width:clamp(310px,33vw,380px)}
+
+		.contact{padding:clamp(88px,11vh,128px) clamp(28px,7vw,72px) 42px;min-height:100vh}
+		.contact-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(32px,5vw,64px);margin-top:clamp(90px,12vh,140px)}
+		.contact h2{font-size:clamp(4.5rem,8.2vw,7.8rem);margin-bottom:42px}
+		.business-card{width:100%;max-width:520px}
+		.contact-footer{left:clamp(28px,7vw,72px);right:clamp(28px,7vw,72px)}
+	}
+
+	@media(max-width:760px){
+		.section-top{align-items:flex-start;gap:12px}
+		.eyebrow,.section-index{font-size:9px;line-height:1.4}
+		.eyebrow span{margin-right:10px}
+
+		.hero{padding:clamp(82px,14vh,120px) clamp(18px,7vw,28px) clamp(92px,16vh,144px);gap:clamp(60px,12vh,112px)}
+		.hero-identity{column-gap:10px}
+		.hero-mark{width:clamp(48px,14vw,58px)}
+		.hero-name{font-size:clamp(3.35rem,15.5vw,5.8rem);line-height:.8}
+		.hero-role{font-size:9px;letter-spacing:.12em;margin-top:16px;padding-left:4px}
+		.hero-portrait{height:clamp(360px,68vh,580px);min-height:0;width:100%}
+
+		.about{padding:clamp(72px,10vh,96px) clamp(18px,7vw,28px) 0;min-height:auto}
+		.about-layout{margin-top:clamp(64px,10vh,88px)}
+		.about-heading{margin-bottom:clamp(84px,16vh,142px)}
+		.about h2{font-size:clamp(4.25rem,18vw,6.5rem);line-height:.82}
+		.about-portrait{width:min(86%,360px);margin:0 auto 48px}
+		.about-text{max-width:100%;padding:0}
+		.large-copy{font-size:clamp(1.65rem,7vw,2.25rem);line-height:1.05;margin-bottom:26px}
+		.about-text>p:not(.large-copy){font-size:14px;line-height:1.7}
+		.facts{gap:6px;margin:28px 0}
+		.facts span{padding:7px 9px;font-size:9px}
+		.about-marquee{margin-top:clamp(112px,18vh,170px);margin-bottom:clamp(76px,12vh,112px)}
+
+		.work-reel{display:block;min-height:auto;padding-block:clamp(88px,13vh,132px) clamp(72px,11vh,108px)}
+		.reel-intro{padding-inline:clamp(18px,7vw,28px)}
+		.reel-intro h2{font-size:clamp(3.8rem,16vw,5.9rem);line-height:.82;margin:clamp(48px,8vh,68px) 0 32px}
+		.reel-hint{line-height:1.7}
+		.reel-track{width:auto;gap:14px;padding:clamp(18px,4vh,30px) clamp(18px,7vw,28px) 44px;overflow-x:auto;overflow-y:visible}
+		.reel-card,.reel-card.hero-card{width:min(78vw,320px);min-width:min(78vw,320px);margin:0}
+		.reel-meta{font-size:9px;gap:8px;padding-top:12px;line-height:1.35}
+		.reel-meta strong{max-width:62%}
+
+		.contact{min-height:900px;padding:clamp(72px,10vh,96px) clamp(18px,7vw,28px) 32px}
+		.contact-layout{display:block;margin-top:clamp(76px,12vh,108px)}
+		.contact h2{font-size:clamp(4rem,17vw,6.2rem);line-height:.82;margin-bottom:36px}
+		.email{display:block;width:fit-content;max-width:100%;padding-bottom:10px;font-size:clamp(.95rem,4.7vw,1.25rem);overflow-wrap:anywhere}
+		.business-card{width:100%;aspect-ratio:1.55;margin-top:clamp(72px,12vh,104px)}
+		.card-face{padding:clamp(16px,5vw,22px)}
+		.card-face::after{inset:9px}
+		.card-brand{gap:9px}
+		.card-brand .card-mark{width:clamp(40px,12vw,50px)}
+		.card-brand b{font-size:clamp(2.6rem,13vw,4.5rem)}
+		.card-brand small{font-size:8px;letter-spacing:.2em;margin-top:9px}
+		.card-topline,.card-bottomline{font-size:7px;letter-spacing:.06em;gap:10px}
+		.card-bottomline{align-items:flex-end}
+		.card-bottomline i{font-size:8px;text-align:right}
+		.contact-footer{position:static;margin-top:clamp(64px,10vh,92px);padding-bottom:4px;display:grid;grid-template-columns:1fr auto;gap:14px 18px}
+		.contact-footer span:first-child{grid-column:1 / -1}
+		.contact-footer span:nth-child(2){display:block;grid-column:1}
+		.contact-footer a{grid-column:2;grid-row:2;align-self:end;text-align:right}
+	}
+
+	@media(max-width:360px){
+		.hero-name{font-size:3.2rem}
+		.hero-mark{width:45px}
+		.about h2{font-size:4.05rem}
+		.reel-card,.reel-card.hero-card{width:78vw;min-width:78vw}
+		.card-topline,.card-bottomline{font-size:6.5px}
+	}
 	</style>

@@ -5397,3 +5397,399 @@ https://svelte.dev/e/css_unused_selector
 https://svelte.dev/e/css_unused_selector
 11:42:20 PM [vite-plugin-svelte] src/routes/+page.svelte:511:96 Unused CSS selector ".contact-glow"
 https://svelte.dev/e/css_unused_selector
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:43:23 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:1431 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:1661 Unused CSS selector ".logo"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:1776 Unused CSS selector ".top-actions"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:1985 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:2050 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:2200 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:2212 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:2243 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:4582 Unused CSS selector ".text-link"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:5917 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:6145 Unused CSS selector ".reel-card:hover .view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:6474 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:7789 Unused CSS selector ".card-face strong"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:8003 Unused CSS selector ".card-back strong"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:8035 Unused CSS selector ".card-back em"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:8310 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:8409 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:8441 Unused CSS selector ".menu span"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:8518 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:8654 Unused CSS selector "nav.open"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:240:9981 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:0 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:80 Unused CSS selector ".rain-mark .cloud"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:157 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:221 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:362 Unused CSS selector ".rain-mark .drop:nth-child(2)"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:412 Unused CSS selector ".rain-mark .drop:nth-child(3)"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:463 Unused CSS selector ".rain-mark:hover .drop"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:242:1847 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:326:13 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:326:29 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:326:41 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:326:118 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:327:1 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:331:1 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:436:1 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:509:58 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:43:23 PM [vite-plugin-svelte] src/routes/+page.svelte:511:96 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:43:46 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:43:47 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1431 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1661 Unused CSS selector ".logo"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1776 Unused CSS selector ".top-actions"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1985 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2050 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2200 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2212 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2243 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:4582 Unused CSS selector ".text-link"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:5917 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:6145 Unused CSS selector ".reel-card:hover .view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:6474 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:7789 Unused CSS selector ".card-face strong"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8003 Unused CSS selector ".card-back strong"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8035 Unused CSS selector ".card-back em"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8310 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8409 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8441 Unused CSS selector ".menu span"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8518 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8654 Unused CSS selector "nav.open"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:9981 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:0 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:80 Unused CSS selector ".rain-mark .cloud"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:157 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:221 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:362 Unused CSS selector ".rain-mark .drop:nth-child(2)"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:412 Unused CSS selector ".rain-mark .drop:nth-child(3)"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:463 Unused CSS selector ".rain-mark:hover .drop"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:1847 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:13 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:29 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:41 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:118 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:328:1 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:332:1 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:437:1 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:510:58 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:512:96 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+[2m11:44:57 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mhmr update [39m[2m/src/routes/+page.svelte, /src/routes/+page.svelte?svelte&type=style&lang.css[22m
+[2m11:44:57 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2msrc/routes/+page.svelte[22m
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1431 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1661 Unused CSS selector ".logo"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1776 Unused CSS selector ".top-actions"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1985 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2050 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2200 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2212 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2243 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:4582 Unused CSS selector ".text-link"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:5917 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:6145 Unused CSS selector ".reel-card:hover .view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:6474 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:7789 Unused CSS selector ".card-face strong"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8003 Unused CSS selector ".card-back strong"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8035 Unused CSS selector ".card-back em"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8310 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8409 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8441 Unused CSS selector ".menu span"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8518 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8654 Unused CSS selector "nav.open"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:241:9981 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:0 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:80 Unused CSS selector ".rain-mark .cloud"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:157 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:221 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:362 Unused CSS selector ".rain-mark .drop:nth-child(2)"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:412 Unused CSS selector ".rain-mark .drop:nth-child(3)"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:463 Unused CSS selector ".rain-mark:hover .drop"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:243:1847 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:13 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:29 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:41 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:327:118 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:328:1 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:332:1 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:437:1 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:510:58 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:44:57 PM [vite-plugin-svelte] src/routes/+page.svelte:512:96 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:01 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1431 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1661 Unused CSS selector ".logo"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1776 Unused CSS selector ".top-actions"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:1985 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2050 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2200 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2212 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:2243 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:4582 Unused CSS selector ".text-link"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:5917 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:6145 Unused CSS selector ".reel-card:hover .view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:6474 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:7789 Unused CSS selector ".card-face strong"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8003 Unused CSS selector ".card-back strong"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8035 Unused CSS selector ".card-back em"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8310 Unused CSS selector ".topbar"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8409 Unused CSS selector ".menu"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8441 Unused CSS selector ".menu span"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8518 Unused CSS selector "nav"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:8654 Unused CSS selector "nav.open"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:241:9981 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:0 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:80 Unused CSS selector ".rain-mark .cloud"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:157 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:221 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:362 Unused CSS selector ".rain-mark .drop:nth-child(2)"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:412 Unused CSS selector ".rain-mark .drop:nth-child(3)"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:463 Unused CSS selector ".rain-mark:hover .drop"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:243:1847 Unused CSS selector ".rain-mark"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:327:13 Unused CSS selector ".text-link span"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:327:29 Unused CSS selector "nav a:hover"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:327:41 Unused CSS selector ".text-link:hover"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:327:118 Unused CSS selector ".rain-mark:hover .cloud"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:328:1 Unused CSS selector ".view-arrow"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:332:1 Unused CSS selector ".rain-mark .drop"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:437:1 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:510:58 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+11:45:01 PM [vite-plugin-svelte] src/routes/+page.svelte:512:96 Unused CSS selector ".contact-glow"
+https://svelte.dev/e/css_unused_selector
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:08 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:11 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:14 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:24 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:27 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/0.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/1.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/nodes/2.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/app.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/shared/error-template.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/server/internal.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/client/matchers.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.js[22m
+[2m11:45:30 PM[22m [36m[1m[vite][22m[39m [34m[2m(ssr)[22m[39m [32mpage reload [39m[2m.svelte-kit/generated/root.svelte[22m
