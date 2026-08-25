@@ -1,0 +1,13 @@
+[    2204ms] [LOG] [vite] server connection lost. Polling for restart... @ http://127.0.0.1:41729/@vite/client:1002
+[    4226ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:41729/src/routes/+layout.svelte:0
+[    4227ms] [WARNING] The next HMR update will cause the page to reload @ http://127.0.0.1:41729/@vite/client:532
+[    4228ms] [ERROR] TypeError: Failed to fetch dynamically imported module: http://127.0.0.1:41729/.svelte-kit/generated/client/nodes/0.js @ http://127.0.0.1:41729/@vite/client:532
+[    4234ms] Failed to fetch dynamically imported module: http://127.0.0.1:41729/.svelte-kit/generated/client/nodes/0.js
+[    4241ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:41729/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte?v=52100ea1:0
+[    4241ms] Failed to fetch dynamically imported module: http://127.0.0.1:41729/.svelte-kit/generated/client/nodes/1.js
+[    4257ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:41729/src/routes/+page.svelte:0
+[    4414ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:41729/favicon.svg:0
+[    6275ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:41729/.svelte-kit/generated/shared/error-template.js:0
+[    6276ms] Failed to fetch dynamically imported module: http://127.0.0.1:41729/.svelte-kit/generated/shared/error-template.js
+[    7579ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:41729/reel-rhino.jpg:0
+[    7579ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:41729/reel-baobab.jpg:0

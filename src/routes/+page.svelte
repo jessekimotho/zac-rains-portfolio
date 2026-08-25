@@ -16,10 +16,28 @@
 		['reel-rhino.jpg', '03 / Untamed', 'wildlife / 2024'],
 		['reel-baobab.jpg', '04 / Solitude', 'landscape / kenya'],
 		['reel-open-country.jpg', '05 / Open country', 'light / 2024'],
-		['reel-portrait.jpg', '06 / Final edits', 'portrait / 2024']
+		['reel-portrait.jpg', '06 / Final edits', 'portrait / 2024'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029.jpg', '07 / Great day', 'wildlife / tsavo'],
+		['zacrains_Where_the_wild_things_roam..._🦒🦒_2024-07-12_C9UCViVMitB_3410361093891173185.jpg', '08 / Wild things', 'wildlife / kenya'],
+		['zacrains_Majestic_and_untamed_#SavannahLife_#Rhinos_#KenyaWildlife_#M_2024-07-09_C9MPiDUsr12_3408167328740982134.jpg', '09 / Untamed', 'wildlife / kenya'],
+		['zacrains_Nature’s_jaws_of_steel!_This_Nile_crocodile_in_Kenya’s_water_2024-07-09_C9NY1OlMZ4c_3408489703894261276.jpg', '10 / Jaws of steel', 'wildlife / kenya'],
+		['zacrains_Solitude_and_strength🌳_#Kenya_#Wilderness_#tsavowest_#baobab_2024-07-29_C-AVEwmuciX_3422828402845534359.jpg', '11 / Solitude', 'landscape / tsavo'],
+		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', '12 / Gentle giant', 'wildlife / kenya'],
+		['zacrains_Final_edits_from_this_week🤩🤩_#absolutlystunning_2024-06-02_C7uHG8usL52_3381671634052103798.jpg', '13 / Quiet plains', 'wildlife / kenya'],
+		['zacrains_One_of_my_favorite_nights_to_photograph_every_year._🇺🇸🦅🎆_2026-07-05_DaZjZvCjoNC_3934331449608405826.jpg', '14 / After dark', 'night / 2026']
 	];
-	let menuOpen = false;
-	let scrolled = false;
+	// Keep the reel limited to filenames verified in /static. The original
+	// social-export names above contain characters that can be corrupted in URLs.
+	reel.splice(6, 8,
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029.jpg', '07 / Great day', 'wildlife / tsavo'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_2.jpg', '08 / Tsavo light', 'wildlife / tsavo'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_3.jpg', '09 / Wild country', 'wildlife / tsavo'],
+		['zacrains_2024-07-13_C9XuO6YM2JB_3411398577651671617.jpg', '10 / Blue water', 'light / 2024'],
+		['zacrains_Kenya_is_such_a_beautiful_country!🇰🇪🇰🇪_2024-04-17_C53pP9Qszq7_3348326264450792123.jpg', '11 / Wide open', 'landscape / kenya'],
+		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971.jpg', '12 / Red in the woods', 'motion / 2024'],
+		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', '13 / Gentle giant', 'wildlife / kenya'],
+		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097_2.jpg', '14 / Close encounter', 'wildlife / kenya']
+	);
 	let cardFlipped = false;
 	const cardBg = asset('776442682_1588100949420590_8353220821612154198_n.jpg');
 
@@ -36,15 +54,36 @@
 		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		if (reduceMotion) return;
 		const intro = gsap.timeline({ defaults: { ease: 'power4.out' } });
-		intro.from('.topbar', { y: -30, opacity: 0, duration: 0.8 })
-			.from('.hero-identity', { y: 45, opacity: 0, duration: 1 }, '-=.35')
+		intro.from('.hero-identity', { y: 45, opacity: 0, duration: 1 })
 			.from('.hero-portrait', { clipPath: 'inset(0 0 100% 0)', scale: 1.12, duration: 1.4 }, '-=.65');
 
 		gsap.to('.hero-slide img', { yPercent: 12, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+		// Give the vertical page scroll a layered, camera-like depth. Positive
+		// values drift down as the section passes; negative values drift up.
+		/** @type {Array<[string, number]>} */
+		const parallaxLayers = [
+			['.hero-portrait', 0.06],
+			['.about h2', -0.08],
+			['.about-portrait img', 0.12],
+			['.large-copy', -0.06],
+			['.contact h2', -0.08]
+		];
+		parallaxLayers.forEach(([selector, speed]) => {
+			const element = document.querySelector(selector);
+			if (!element) return;
+			const distance = () => window.innerHeight * speed;
+			gsap.fromTo(element, { y: () => -distance() }, { y: () => distance(), ease: 'none', scrollTrigger: {
+				trigger: element,
+				start: 'top bottom',
+				end: 'bottom top',
+				scrub: true,
+				invalidateOnRefresh: true
+			} });
+		});
 		const ambientBackground = document.querySelector('.ambient-background');
 		if (ambientBackground) {
 			const sections = gsap.utils.toArray('.chapter');
-			const colors = ['#0a0e0e', '#edf0e8', '#111817', '#f15a24'];
+			const colors = ['#0a0e0e', '#edf0e8', '#111817', '#4ca6d8'];
 			const transition = 0.08;
 			const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
 			const backgroundTimeline = gsap.timeline({
@@ -82,14 +121,25 @@
 		/** @type {HTMLElement | null} */
 		const firstReelCard = document.querySelector('.reel-card');
 		if (reelTrack && reelIntro && firstReelCard) {
-			const distance = () => Math.max(0, reelTrack.scrollWidth - window.innerWidth + 40);
-			const scrollEnd = () => `+=${distance() + window.innerHeight * 0.7}`;
+			// Stop with a large, intentional landing gap after the final frame.
+			// This is part of the translate distance, so the last image remains
+			// fully visible instead of being pushed off the right edge.
+			const trailingGap = () => window.innerWidth <= 760
+				? Math.max(96, window.innerWidth * 0.24)
+				: Math.min(760, Math.max(360, window.innerWidth * 0.42));
+			const trackStart = () => Math.max(0, reelTrack.offsetLeft);
+			const distance = () => Math.max(0, trackStart() + reelTrack.scrollWidth - window.innerWidth + trailingGap());
+			// Give the intro a longer pause before the cards travel across it.
+			const scrollEnd = () => `+=${distance() + window.innerHeight * 1.35}`;
 			const fadeBounds = () => {
 				const totalDistance = distance();
 				const overlapStart = firstReelCard.offsetLeft - (reelIntro.offsetLeft + reelIntro.offsetWidth);
 				const overlapEnd = firstReelCard.offsetLeft + firstReelCard.offsetWidth - reelIntro.offsetLeft;
+				const overlap = Math.max(0, overlapEnd - overlapStart);
 				return {
-					start: totalDistance ? Math.max(0, overlapStart / totalDistance) : 0,
+					// Keep the copy fully readable until the first image has clearly
+					// started covering the intro instead of fading on first contact.
+					start: totalDistance ? Math.max(0, (overlapStart + overlap * 0.3) / totalDistance) : 0,
 					end: totalDistance ? Math.min(1, overlapEnd / totalDistance) : 1
 				};
 			};
@@ -98,6 +148,7 @@
 				start: 'top top',
 				end: scrollEnd,
 				pin: true,
+				anticipatePin: 1,
 				scrub: 1,
 				invalidateOnRefresh: true,
 				/** @param {{ progress: number }} self */
@@ -110,7 +161,6 @@
 			};
 			gsap.to(reelTrack, { x: () => -distance(), ease: 'none', scrollTrigger: reelScrollTrigger });
 		}
-		gsap.to('.contact-glow', { rotation: 360, duration: 22, repeat: -1, ease: 'none' });
 			cleanup = () => {
 				slideshow.kill();
 				ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
@@ -129,27 +179,10 @@
 	<meta name="description" content="Zac Rains is a Wisconsin photographer turning weather, wild places, and honest moments into photographs that feel like rain on glass." />
 </svelte:head>
 
-<div class="shell">
-	<div class="ambient-background" aria-hidden="true">
-		<span class="puddle puddle-a"></span><span class="puddle puddle-b"></span><span class="puddle puddle-c"></span><span class="puddle puddle-d"></span>
-		<span class="storm-rain"></span><span class="storm-flash"></span>
-	</div>
-	<header class="topbar">
-		<a class="logo" href="/" aria-label="Zac Rains home">
-			<svg class="rain-mark" viewBox="0 0 60 44" width="38" height="28" role="img" aria-label="Rain cloud">
-				<path class="cloud" d="M12,26 C6,26 6,18 12,17 C14,11 22,9 27,12 C31,7 39,7 44,12 C49,11 51,18 48,21 C51,24 48,28 43,28 H14 C10,28 10,26 12,26 Z" />
-				<g class="drops">
-					<line x1="18" y1="29" x2="16" y2="40" class="drop" />
-					<line x1="30" y1="29" x2="28" y2="43" class="drop drop-mid" />
-					<line x1="42" y1="29" x2="40" y2="40" class="drop" />
-				</g>
-			</svg>
-			<span>ZAC<br />RAINS</span>
-		</a>
-		<nav class:open={menuOpen}><a href="#about" onclick={() => (menuOpen = false)}>About</a><a href="#work" onclick={() => (menuOpen = false)}>Work</a><a href="#contact" onclick={() => (menuOpen = false)}>Contact</a></nav>
-		<div class="top-actions"><button class="menu" aria-label="Toggle navigation" aria-expanded={menuOpen} onclick={() => (menuOpen = !menuOpen)}><span></span><span></span></button></div>
-	</header>
-
+	<div class="shell">
+		<div class="ambient-background" aria-hidden="true">
+			<span class="storm-rain"></span><span class="storm-flash"></span>
+		</div>
 	<main>
 		<section class="hero chapter" id="top">
 			<div class="hero-copy-wrap">
@@ -159,8 +192,8 @@
 						<g class="drops"><line x1="18" y1="29" x2="16" y2="40" class="drop" /><line x1="30" y1="29" x2="28" y2="43" class="drop drop-mid" /><line x1="42" y1="29" x2="40" y2="40" class="drop" /></g>
 					</svg>
 					<h1 class="hero-name">Zac <span>Rains</span></h1>
+					<p class="hero-role">Photographer</p>
 				</div>
-				<p class="hero-role">Photographer</p>
 			</div>
 			<div class="hero-portrait" aria-label="Selected photography slideshow">{#each heroSlides as slide}<div class="hero-slide"><img src={asset(slide[0])} alt={slide[1]} /></div>{/each}</div>
 		</section>
@@ -168,17 +201,18 @@
 		<div class="rain-break" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 		<section class="about chapter" id="about">
 			<div class="section-top reveal"><p class="eyebrow"><span>02</span> The person behind the storm</p><span class="section-index">ABOUT / 2026</span></div>
-			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains smiling outdoors" /><span>THE GUY<br />BEHIND THE<br />LENS ↘</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storm chaser, and professional third wheel.</p><p>I chase the kind of images that feel like weather — a little imperfect, always honest, and impossible to fake. From Wisconsin back roads to the wild edges of Kenya, I wait for the split second that makes a story stick.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Wild places</span></div><a class="text-link" href="#work">See the work <span>↘</span></a></div></div>
-			<div class="about-marquee" aria-hidden="true"><span>RAINS / CLOUDS / LIGHT / PRESENCE / </span><span>RAINS / CLOUDS / LIGHT / PRESENCE / </span></div>
+			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains smiling outdoors" /><span>THE GUY<br />BEHIND THE<br />LENS ↘</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storm chaser, and professional third wheel.</p><p>I chase the kind of images that feel like weather — a little imperfect, always honest, and impossible to fake. From Wisconsin back roads to the wild edges of Kenya, I wait for the split second that makes a story stick.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Wild places</span></div></div></div>
+			<div class="about-marquee" aria-hidden="true"><div class="about-marquee-track"><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span></div><div class="about-marquee-track"><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span></div></div>
 		</section>
 
 		<section class="work-reel chapter" id="work">
 			<div class="reel-intro"><p class="eyebrow"><span>03</span> Selected work</p><h2>Frames<br /><em>worth<br />keeping.</em></h2><p class="reel-hint">Keep scrolling<br /><span>→</span></p></div>
-			<div class="reel-track">{#each reel as item, i}<a class:hero-card={i === 0} class="reel-card" href="#contact"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading={i > 1 ? 'lazy' : 'eager'} /><span class="view-arrow">↗</span></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></a>{/each}</div>
+			<div class="reel-track">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading="eager" decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
 		</section>
 
 		<section class="contact chapter" id="contact">
-			<div class="contact-glow" aria-hidden="true"></div><div class="section-top"><p class="eyebrow"><span>04</span> Before the storm</p><span class="section-index">LET'S CONNECT</span></div>
+			<div class="contact-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-b"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-c"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-d"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-e"><i></i><i></i><i></i><i></i><i></i></span></div>
+			<div class="section-top"><p class="eyebrow"><span>04</span> Before the storm</p><span class="section-index">LET'S CONNECT</span></div>
 			<div class="contact-layout"><div><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a></div><button class="business-card" class:flipped={cardFlipped} onclick={() => (cardFlipped = !cardFlipped)} aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
 				<span class="card-face card-front" style="--card-bg: url({cardBg})">
 					<span class="card-topline"><span>01 / PERSONAL CARD</span><span>EST. 2024</span></span>
@@ -189,10 +223,12 @@
 					<span class="card-bottomline"><span>WISCONSIN / WORLDWIDE</span><i>Flip to connect ↗</i></span>
 				</span>
 				<span class="card-face card-back" style="--card-bg: url({cardBg})">
-					<span class="card-topline"><span>02 / CONTACT</span><span>GOOD LIGHT</span></span>
-					<span class="back-heading"><strong>ZAC RAINS</strong><em>PHOTOGRAPHER</em></span>
-					<span class="card-info"><a href="tel:262-232-9332" class="card-link">262—232—9332</a><a href="mailto:astrozac@outlook.com" class="card-link">astrozac@outlook.com</a><a href="https://rainsphotography.com" target="_blank" rel="noopener" class="card-link">rainsphotography.com</a></span>
-					<span class="card-bottomline"><span>PORTRAITS · COUPLES · FAMILIES<br />WEDDINGS · EVENTS</span><i>Flip back ↙</i></span>
+					<span class="back-content">
+						<span class="card-info">
+							<a href="tel:262-232-9332" class="card-link"><small>CALL</small><span>262—232—9332</span></a>
+							<a href="mailto:astrozac@outlook.com" class="card-link"><small>MAIL</small><span>astrozac@outlook.com</span></a>
+						</span>
+					</span>
 				</span>
 			</button></div>
 			<div class="contact-footer"><span>© {new Date().getFullYear()} Zac Rains Photography</span><span>Good light, even after the rain.</span><a href="#top">Back to top ↑</a></div>
@@ -206,13 +242,7 @@
 .rain-mark{display:block;width:38px;height:28px;cursor:pointer;overflow:visible}.rain-mark .cloud{fill:#f1eee7;transition:fill .25s ease,transform .25s ease}.rain-mark:hover .cloud{fill:#ff5b1a;transform:translateY(-2px)}.rain-mark .drop{stroke:#ff5b1a;stroke-width:2.2;stroke-linecap:round;opacity:.9;animation:pour 1.1s linear infinite;transform-origin:center}.rain-mark .drop:nth-child(2){animation-delay:.2s}.rain-mark .drop:nth-child(3){animation-delay:.45s}.rain-mark:hover .drop{animation-duration:.65s}@keyframes pour{0%{transform:translateY(-4px);opacity:0}15%{opacity:1}100%{transform:translateY(16px);opacity:0}}.rain-break{height:80px;display:flex;justify-content:space-evenly;align-items:flex-start;padding:0 20vw;overflow:hidden;background:transparent}.rain-break span{width:1px;height:100%;background:linear-gradient(180deg,transparent 0%,#ff5b1a 45%,transparent 100%);opacity:.35;transform:translateY(-110%);animation:rain-fall 2.2s linear infinite}.rain-break span:nth-child(2n){animation-delay:.3s;animation-duration:2.8s}.rain-break span:nth-child(3n){animation-delay:.8s;animation-duration:1.9s}@keyframes rain-fall{0%{transform:translateY(-110%);opacity:0}20%{opacity:.35}100%{transform:translateY(110%);opacity:0}}.card-front{background:linear-gradient(rgba(10,14,14,.88),rgba(10,14,14,.88)),var(--card-bg)}.card-back{background:linear-gradient(rgba(241,238,231,.9),rgba(241,238,231,.9)),var(--card-bg)}.business-card .card-front,.business-card .card-back{background-size:cover,cover;background-position:center,center}.card-info{display:flex;flex-direction:column;gap:9px;line-height:1.45;margin-top:auto;margin-bottom:8px}:global(.card-info em){font-style:normal;color:#ff5b1a}.card-link{color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.card-link:hover{color:#ff5b1a}@media(max-width:760px){.rain-mark{width:34px;height:25px}}
 
 
-	.topbar{position:sticky;top:0;height:150px;padding:30px 7vw;align-items:flex-start;transition:height .55s ease,padding .55s ease;background:rgba(10,14,14,.8)}
-	.topbar .logo{gap:20px;font-size:clamp(2.5rem,4vw,4.5rem);transition:transform .55s ease,font-size .55s ease,gap .55s ease;transform-origin:top left}
-	.topbar .rain-mark{width:clamp(68px,7vw,96px);height:auto;transition:width .55s ease}
-	:global(.topbar.scrolled){height:72px;padding:20px 4.5vw}
-	:global(.topbar.scrolled) .logo{gap:11px;font-size:14px}
-	:global(.topbar.scrolled) .rain-mark{width:38px}
-	.hero{grid-template-columns:44% 56%;padding:6vh 7vw;gap:5vw;min-height:calc(100vh - 150px)}
+	.hero{grid-template-columns:44% 56%;padding:6vh 7vw;gap:5vw;min-height:100vh}
 	.hero-copy-wrap{display:flex;align-items:flex-start;padding-top:4vh}
 	.hero-role{margin:0;color:#ff5b1a;font:12px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase}
 	.hero-portrait{width:100%;height:min(78vh,820px);min-height:0;align-self:center;transform:none;clip-path:none}
@@ -220,13 +250,7 @@
 	.hero-slide img{width:100%;height:100%;object-fit:cover}
 	.rain-break{display:none}
 	@media(max-width:760px){
-		.topbar{height:110px;padding:24px 7vw}
-		.topbar .logo{gap:12px;font-size:clamp(2rem,10vw,3rem)}
-		.topbar .rain-mark{width:54px}
-		:global(.topbar.scrolled){height:64px;padding:18px 7vw}
-		:global(.topbar.scrolled) .logo{font-size:13px}
-		:global(.topbar.scrolled) .rain-mark{width:34px}
-		.hero{padding:9vh 7vw 10vh;gap:8vh;min-height:calc(100vh - 110px)}
+		.hero{padding:9vh 7vw 10vh;gap:8vh;min-height:100vh}
 		.hero-copy-wrap{padding-top:0}
 		.hero-role{font-size:10px}
 		.hero-portrait{width:100%;height:64vh;min-height:420px}
@@ -251,29 +275,41 @@
 	.card-brand .card-mark{width:clamp(60px,10vw,102px);height:auto;overflow:visible;flex:none}
 	.card-brand .cloud{fill:#f1eee7}.card-brand .drop{stroke:#ff5b1a;stroke-width:2.2;stroke-linecap:round;animation:pour 1.1s linear infinite;transform-origin:center}.card-brand .drop:nth-child(2){animation-delay:.2s}.card-brand .drop:nth-child(3){animation-delay:.45s}
 	.card-brand b{display:block;font-size:clamp(3.5rem,8vw,7.8rem);font-weight:600;line-height:.75;letter-spacing:-.1em}.card-brand small{display:block;margin-top:17px;color:#ff5b1a;font:clamp(9px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.34em}
-	.card-bottomline i,.card-back .card-bottomline i{font:11px 'DM Mono',monospace;font-style:normal;letter-spacing:.08em;color:#f1eee7;transition:color .2s ease}.business-card:hover .card-bottomline i{color:#ff5b1a}
-	.back-heading{display:flex;flex-direction:column;margin-top:auto}.back-heading strong{color:#f1eee7;font-size:clamp(2rem,4vw,4rem);line-height:.85;letter-spacing:-.06em}.back-heading em{margin-top:10px;color:#ff5b1a;font:11px 'DM Mono',monospace;font-style:normal;letter-spacing:.25em;text-transform:uppercase}
+	.card-bottomline i{font:11px 'DM Mono',monospace;font-style:normal;letter-spacing:.08em;color:#f1eee7;transition:color .2s ease}.business-card:hover .card-bottomline i{color:#ff5b1a}
 	.card-info{display:flex;flex-direction:column;gap:8px;margin:22px 0 28px;font:clamp(10px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.08em;text-transform:none}.card-info .card-link{color:#f1eee7;text-decoration:none;transition:color .2s ease}.card-info .card-link:hover{color:#ff5b1a}
-	@media(max-width:760px){.business-card{width:100%;aspect-ratio:1.5}.card-face{padding:20px}.card-face::after{inset:9px}.card-brand{gap:10px}.card-brand .card-mark{width:45px}.card-brand b{font-size:clamp(2.8rem,14vw,4.6rem)}.card-brand small{margin-top:10px;font-size:8px;letter-spacing:.22em}.card-topline,.card-bottomline{font-size:8px;letter-spacing:.08em}.card-bottomline{align-items:flex-end}.card-bottomline i{font-size:9px}.back-heading strong{font-size:clamp(1.8rem,9vw,3rem)}.card-info{gap:5px;margin:14px 0 16px;font-size:9px}.card-back .card-bottomline span{line-height:1.5}}
+	@media(max-width:760px){.business-card{width:100%;aspect-ratio:1.5}.card-face{padding:20px}.card-face::after{inset:9px}.card-brand{gap:10px}.card-brand .card-mark{width:45px}.card-brand b{font-size:clamp(2.8rem,14vw,4.6rem)}.card-brand small{margin-top:10px;font-size:8px;letter-spacing:.22em}.card-topline,.card-bottomline{font-size:8px;letter-spacing:.08em}.card-bottomline{align-items:flex-end}.card-bottomline i{font-size:9px}.card-info{gap:5px;margin:14px 0 16px;font-size:9px}}
 
-	.topbar{position:sticky;top:0;height:72px;padding:20px 4.5vw;align-items:center;background:rgba(10,14,14,.88);backdrop-filter:blur(14px)}
-	.topbar .logo{gap:11px;font-size:14px}
-	.topbar .rain-mark{width:38px;height:28px}
-	.hero{min-height:calc(100vh - 72px);display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);align-items:center;gap:clamp(5vw,9vw,12vw);padding:clamp(8vh,13vh,18vh) 7vw}
-	.hero-copy-wrap{align-self:center;position:relative;z-index:2;padding:0}
+	/* Give the reel room to breathe vertically and leave a clear landing area
+	   after the final frame. */
+	.work-reel{padding-block:clamp(12vh,14vh,18vh)}
+	.reel-track{padding-right:0}
+	@media(max-width:760px){
+		.work-reel{padding-block:clamp(96px,14vh,150px) clamp(80px,11vh,120px)}
+		.reel-track{
+			padding:clamp(18px,4vh,38px) clamp(18px,5vw,36px) clamp(54px,8vh,88px);
+			padding-right:0;
+			scroll-padding-inline:18px;
+			scroll-behavior:smooth;
+			overflow-x:auto;
+			overflow-y:visible;
+			overscroll-behavior-x:contain;
+		}
+	}
+
+	.hero{min-height:100vh;display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);align-items:center;gap:clamp(5vw,9vw,12vw);padding:clamp(8vh,13vh,18vh) 7vw}
+	.hero-copy-wrap{align-self:center;position:relative;z-index:2;padding:0;display:flex;flex-direction:column;align-items:flex-start}
 	.hero-identity{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:clamp(16px,2vw,30px);margin:0}
 	.hero-mark{grid-row:1 / span 2;width:clamp(70px,9vw,128px);height:auto;overflow:visible}
 	.hero-mark .cloud{fill:#f1eee7}
 	.hero-mark .drop{stroke:#ff5b1a;stroke-width:2.2;stroke-linecap:round}
 	.hero-name{margin:0;font-size:clamp(5rem,10vw,11rem);font-weight:600;letter-spacing:-.1em;line-height:.78;text-transform:uppercase}
 	.hero-name span{color:#ff5b1a}
-	.hero-role{grid-column:2;margin:clamp(22px,3vw,42px) 0 0;color:#ff5b1a;font:12px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase}
+	.hero-role{grid-column:2;margin:8px 0 0;padding:0 0 0 clamp(8px,.7vw,12px);color:#ff5b1a;font:12px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase}
 	.hero-portrait{position:relative;top:auto;right:auto;width:100%;height:min(72vh,760px);min-height:520px;align-self:center;clip-path:none;transform:none;border-radius:2px}
 	.hero-portrait:after{background:linear-gradient(180deg,transparent 65%,rgba(5,9,9,.25))}
 	.hero-slide img{height:108%;object-position:center;filter:saturate(.9) contrast(1.02)}
 	.rain-break{display:none}
 	@media(max-width:760px){
-		.topbar{height:64px;padding:18px 7vw}
 		.hero{display:flex;flex-direction:column;align-items:stretch;min-height:auto;gap:12vh;padding:14vh 7vw 16vh}
 		.hero-identity{column-gap:14px}
 		.hero-mark{width:58px}
@@ -282,4 +318,197 @@
 		.hero-portrait{height:70vh;min-height:430px}
 	}
 	.reel-intro{will-change:opacity}
-</style>
+
+	/* Rain-inspired accent palette */
+	:global(:root){--rain-accent:#4ca6d8;--rain-accent-deep:#2d6f98;--rain-accent-faint:rgba(76,166,216,.2)}
+	.puddle{border-color:rgba(76,166,216,.2)}
+	.puddle::before{border-color:rgba(76,166,216,.14)}
+	.email span,.text-link span,nav a:hover,.text-link:hover,.eyebrow span,h2 em,.reel-hint span,.card-mark,.card-face i,.rain-mark:hover .cloud,.hero-role,.card-topline span:last-child,.card-bottomline span:last-child,.card-brand small,.business-card:hover .card-bottomline i,.card-info .card-link:hover,.hero-name span{color:var(--rain-accent)}
+	.view-arrow{background:var(--rain-accent)}
+	.contact .eyebrow{color:var(--rain-accent-deep)}
+	.contact h2 em{color:#fff}
+	.contact-footer{color:var(--rain-accent-deep)}
+	.rain-mark .drop,.card-brand .drop,.hero-mark .drop{stroke:var(--rain-accent)}
+	.rain-break span{background:linear-gradient(180deg,transparent 0%,var(--rain-accent) 45%,transparent 100%)}
+	.business-card:focus-visible{outline-color:var(--rain-accent)}
+	.card-face::after{border-color:rgba(76,166,216,.45)}
+
+	/* Puddles: a small number of GPU-friendly ripple emitters. Each ring only
+	   animates opacity and transform, so the loop does not trigger layout. */
+	.contact-puddles{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+	.contact > .section-top,.contact > .contact-layout,.contact > .contact-footer{position:relative;z-index:2}
+	.contact-puddles .puddle{opacity:1;animation:none;transform:rotate(-8deg);aspect-ratio:1.55;border:0;background:repeating-radial-gradient(ellipse at center,transparent 0 17%,rgba(17,24,23,.18) 18% 18.6%,transparent 19.6% 29%);contain:layout paint;isolation:isolate}
+	.contact-puddles .puddle::before{display:none}
+	.contact-puddles .puddle i{position:absolute;inset:0;display:block;border:2px solid rgba(17,24,23,.34);border-radius:50%;opacity:0;transform:scale(.08,.08);transform-origin:center;animation:puddle-ripple 10s cubic-bezier(.2,.45,.25,1) infinite;will-change:transform,opacity}
+	.contact-puddles .puddle i:nth-child(2){animation-delay:-2s}
+	.contact-puddles .puddle i:nth-child(3){animation-delay:-4s}
+	.contact-puddles .puddle i:nth-child(4){animation-delay:-6s}
+	.contact-puddles .puddle i:nth-child(5){animation-delay:-8s}
+	.contact-puddles .puddle i:nth-child(even){border-color:rgba(17,24,23,.2);border-width:2px}
+	.contact-puddles .puddle-b{transform:rotate(9deg)}
+	.contact-puddles .puddle-c{transform:rotate(-4deg)}
+	.contact-puddles .puddle-d{transform:rotate(13deg)}
+	.contact-puddles .puddle-e{top:18%;right:34%;width:clamp(100px,13vw,220px);transform:rotate(-15deg)}
+	@keyframes puddle-ripple{0%{opacity:.04;transform:scale(.08,.08)}8%{opacity:.68}28%{opacity:.32}72%{opacity:.1}100%{opacity:0;transform:scale(1.12,1.12)}}
+	@media(prefers-reduced-motion:reduce){.contact-puddles .puddle i{animation:none}.contact-puddles .puddle i:first-child{opacity:.18;transform:scale(1)}}
+
+	/* Contact side: keep the back focused on the two ways to reach Zac, with
+	   enough contrast and movement to feel like part of the visual identity. */
+	.card-back{isolation:isolate;padding:clamp(22px,4vw,46px);background:#071316;color:#f1eee7}
+	.card-back::before{background:linear-gradient(125deg,rgba(4,12,14,.9) 0%,rgba(4,12,14,.5) 52%,rgba(76,166,216,.2) 100%),var(--card-bg);background-position:center;background-size:cover;filter:saturate(1.25) contrast(1.12);transform:scale(1.06)}
+	.card-back::after{inset:13px;border-color:rgba(76,166,216,.72);clip-path:polygon(0 0,100% 0,100% 82%,92% 100%,0 100%)}
+	.back-content{position:relative;z-index:1;display:flex;align-items:stretch;justify-content:center;flex:1;margin:0;padding:clamp(8px,1.5vw,18px) 0}
+	.back-content::before{content:'';position:absolute;inset:4% 10% 4% -8%;border:1px solid rgba(76,166,216,.34);clip-path:polygon(0 0,100% 0,89% 100%,0 100%);pointer-events:none}
+	.card-back .card-info{position:relative;display:grid;grid-template-columns:1.18fr .82fr;align-items:stretch;width:100%;min-height:100%;gap:0;margin:0;padding:0;font:10px 'DM Mono',monospace;letter-spacing:.03em}
+	.card-back .card-info::before{content:'';position:absolute;left:58%;top:7%;bottom:7%;width:1px;background:linear-gradient(180deg,transparent,var(--rain-accent) 18%,var(--rain-accent) 82%,transparent);opacity:.72;transform:skew(-12deg);pointer-events:none}
+	.card-back .card-info .card-link{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;min-width:0;padding:clamp(14px,2.4vw,30px) clamp(13px,2.8vw,38px);border:0;color:#f1eee7;text-decoration:none;transition:transform .3s ease,background .3s ease,color .3s ease}
+	.card-back .card-info .card-link:first-child{background:linear-gradient(108deg,rgba(76,166,216,.13),transparent 72%);}
+	.card-back .card-info .card-link:first-child::before{content:'';position:absolute;left:0;top:18%;width:4px;height:64%;background:var(--rain-accent);box-shadow:0 0 18px rgba(76,166,216,.7)}
+	.card-back .card-info .card-link:last-child{padding-left:clamp(20px,3.5vw,48px);background:linear-gradient(108deg,rgba(4,12,14,.12),rgba(76,166,216,.1));}
+	.card-back .card-info .card-link:hover{background:rgba(76,166,216,.18);color:#fff;transform:translateY(-4px)}
+	.card-back .card-info .card-link:focus-visible{outline:1px solid var(--rain-accent);outline-offset:-5px}
+	.card-back .card-info small{color:var(--rain-accent);font-size:9px;letter-spacing:.22em;line-height:1}
+	.card-back .card-info span{max-width:100%;overflow-wrap:anywhere;text-align:left;line-height:1.08;letter-spacing:.01em}
+	.card-back .card-info .card-link:first-child span{font-size:clamp(15px,2.55vw,27px);letter-spacing:.055em;white-space:nowrap}
+	.card-back .card-info .card-link:last-child span{font-size:clamp(11px,1.4vw,16px);line-height:1.25}
+	@media(max-width:760px){
+		.card-back::after{inset:9px}
+		.back-content{padding:4px 0}
+		.back-content::before{inset:3% 2% 3% -5%}
+		.card-back .card-info{grid-template-columns:1fr;gap:10px}
+		.card-back .card-info::before{left:7%;right:7%;top:50%;bottom:auto;width:auto;height:1px;transform:none;background:linear-gradient(90deg,transparent,var(--rain-accent),transparent)}
+		.card-back .card-info .card-link,.card-back .card-info .card-link:last-child{padding:14px 14px 14px 22px;gap:8px}
+		.card-back .card-info small{font-size:8px}
+		.card-back .card-info .card-link:first-child span{font-size:clamp(17px,5vw,24px)}
+		.card-back .card-info .card-link:last-child span{font-size:clamp(11px,3.1vw,14px)}
+	}
+	/* About section: let the introduction land before the supporting story. */
+	.about{min-height:155vh;padding-bottom:8vh}
+	.about-layout{grid-template-columns:minmax(260px,.72fr) minmax(0,1.28fr);column-gap:8vw;row-gap:clamp(10vh,15vh,22vh);align-items:start;margin-top:clamp(12vh,17vh,24vh)}
+	.about-heading{grid-column:1 / -1}
+	.about h2{font-size:clamp(6rem,13vw,14rem)}
+	.about-portrait{width:min(100%,390px);max-width:none}
+	.about-text{max-width:560px;padding:clamp(5vh,8vh,12vh) 0 2vh}
+	.large-copy{font-size:clamp(1.8rem,3vw,3.25rem);margin-bottom:36px}
+	.about-text>p:not(.large-copy){font-size:15px;line-height:1.75;max-width:520px}
+	.facts{margin:42px 0}
+	.about-marquee{margin-top:30vh;margin-bottom:14vh}
+	@media(max-width:760px){
+		.about{min-height:auto;padding-bottom:0}
+		.about-layout{display:block;margin-top:90px}
+		.about-heading{margin-bottom:22vh}
+		.about h2{font-size:clamp(4.8rem,20vw,7rem)}
+		.about-portrait{width:70%;max-width:none;margin:0 0 45px auto}
+		.about-text{padding:0}
+		.about-marquee{margin-top:18vh;margin-bottom:12vh}
+	}
+
+	/* The duplicated phrases make the loop seamless; the mask lets them dissolve
+	   into the section background as they leave either edge. */
+	.about-marquee{
+		width:calc(100% + 18vw);
+		margin-left:-9vw;
+		overflow:hidden;
+		transform:none;
+		color:#111717;
+		opacity:.1;
+		-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%);
+		mask-image:linear-gradient(90deg,transparent 0%,#000 10%,#000 90%,transparent 100%);
+	}
+	.about-marquee span:last-child{color:inherit}
+	.about-marquee b{color:var(--rain-accent);opacity:.82;font-weight:inherit}
+	.about-marquee-track{
+		display:flex;
+		flex:0 0 auto;
+		gap:30px;
+		will-change:transform;
+		animation:about-marquee-scroll 68s linear infinite;
+	}
+	@keyframes about-marquee-scroll{
+		from{transform:translate3d(0,0,0)}
+		to{transform:translate3d(calc(-100% - 30px),0,0)}
+	}
+	@media(max-width:760px){.about-marquee{width:calc(100% + 36px);margin-left:-18px}}
+	@media(prefers-reduced-motion:reduce){.about-marquee-track{animation:none;transform:none}}
+
+	/* Contact finish: a single clean blue field with restrained aerial ripples. */
+	.contact{background:#4ca6d8;color:#0b1b24}
+	.contact-glow{display:none}
+	.contact-puddles{z-index:0}
+	.contact > .section-top,.contact > .contact-layout,.contact > .contact-footer{z-index:1}
+	.contact-puddles .puddle{
+		width:clamp(190px,23vw,390px);
+		aspect-ratio:1.72;
+		border:0;
+		border-radius:50%;
+		background:radial-gradient(ellipse at center,
+			rgba(255,255,255,.12) 0 1.1%,
+			transparent 1.5% 11%,
+			rgba(20,91,137,.14) 11.3% 11.8%,
+			transparent 12.2% 22%,
+			rgba(20,91,137,.11) 22.3% 22.8%,
+			transparent 23.2% 33%,
+			rgba(20,91,137,.08) 33.3% 33.8%,
+			transparent 34.2% 100%);
+		opacity:.72;
+		transform:none;
+		animation:none;
+		contain:layout paint;
+		isolation:isolate;
+	}
+	.contact-puddles .puddle::before{
+		display:block;
+		content:'';
+		position:absolute;
+		inset:46.8% 48.7%;
+		border:0;
+		border-radius:50%;
+		background:rgba(255,255,255,.2);
+		box-shadow:0 0 0 5px rgba(255,255,255,.035);
+		animation:none;
+	}
+	.contact-puddles .puddle i{
+		position:absolute;
+		inset:0;
+		display:block;
+		border:1px solid rgba(15,78,120,.2);
+		border-radius:50%;
+		opacity:0;
+		transform:scale(.06,.06);
+		transform-origin:center;
+		animation:aerial-ripple 9.5s cubic-bezier(.18,.56,.25,1) infinite;
+		will-change:transform,opacity;
+		filter:blur(.15px);
+	}
+	.contact-puddles .puddle i:nth-child(2){animation-delay:-1.9s}
+	.contact-puddles .puddle i:nth-child(3){animation-delay:-3.8s}
+	.contact-puddles .puddle i:nth-child(4){animation-delay:-5.7s}
+	.contact-puddles .puddle i:nth-child(5){animation-delay:-7.6s}
+	.contact-puddles .puddle i:nth-child(even){border-color:rgba(255,255,255,.22)}
+	.contact-puddles .puddle-b{top:34%;right:5%;width:clamp(250px,31vw,530px);transform:rotate(7deg)}
+	.contact-puddles .puddle-c{bottom:-1%;left:35%;width:clamp(220px,27vw,460px);transform:rotate(-4deg)}
+	.contact-puddles .puddle-d{top:58%;left:-4%;width:clamp(150px,18vw,300px);transform:rotate(11deg)}
+	.contact-puddles .puddle-e{top:18%;right:34%;width:clamp(115px,14vw,230px);transform:rotate(-12deg)}
+	@keyframes aerial-ripple{
+		0%{opacity:0;transform:scale(.06,.06)}
+		10%{opacity:.44}
+		35%{opacity:.22}
+		72%{opacity:.08}
+		100%{opacity:0;transform:scale(1.08,1.08)}
+	}
+	@media(prefers-reduced-motion:reduce){.contact-puddles .puddle i{animation:none}.contact-puddles .puddle i:first-child{opacity:.18;transform:scale(1)}}
+	@media(max-width:760px){
+		.contact{background:#4ca6d8}
+		.contact-puddles .puddle{width:clamp(180px,64vw,300px)}
+		.contact-puddles .puddle-b{top:31%;right:-20%;width:clamp(260px,88vw,430px)}
+		.contact-puddles .puddle-c{bottom:6%;left:28%;width:clamp(210px,72vw,350px)}
+		.contact-puddles .puddle-d{top:57%;left:-30%;width:clamp(175px,60vw,280px)}
+		.contact-puddles .puddle-e{top:16%;right:19%;width:clamp(110px,36vw,190px)}
+	}
+	/* Vertical scroll depth layers */
+	.hero-portrait,.about h2,.about-portrait img,.large-copy,.contact-glow,.contact h2{will-change:transform}
+	.about-portrait img{height:130%;margin-top:-15%}
+	@media(prefers-reduced-motion:reduce){.hero-portrait,.about h2,.about-portrait img,.large-copy,.contact-glow,.contact h2{will-change:auto}}
+	/* Let the horizontal reel follow the user's scroll position without snapping. */
+	@media(max-width:760px){.reel-track{scroll-snap-type:none}.reel-card,.reel-card.hero-card{scroll-snap-align:none;scroll-snap-stop:normal}}
+	</style>

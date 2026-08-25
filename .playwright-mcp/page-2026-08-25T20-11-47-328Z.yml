@@ -1,0 +1,147 @@
+- main [ref=f2e4]:
+  - generic [ref=f2e5]:
+    - generic "Zac Rains, photographer" [ref=f2e7]:
+      - img "Rain cloud logo mark" [ref=f2e8]
+      - heading "Zac Rains" [level=1] [ref=f2e14]
+      - paragraph [ref=f2e15]: Photographer
+    - generic "Selected photography slideshow" [ref=f2e16]:
+      - img "Tsavo west" [ref=f2e18]
+      - img "Wild things" [ref=f2e20]
+      - img "Untamed" [ref=f2e22]
+      - img "Solitude" [ref=f2e24]
+  - generic [ref=f2e25]:
+    - generic [ref=f2e26]:
+      - paragraph [ref=f2e27]: 02 The person behind the storm
+      - generic [ref=f2e28]: ABOUT / 2026
+    - generic [ref=f2e29]:
+      - generic [ref=f2e30]:
+        - paragraph [ref=f2e31]: A littleabout me
+        - heading [level=2] [ref=f2e32]:
+          - text: Hi, I'm
+          - emphasis [ref=f2e33]: Zac.
+      - generic [ref=f2e34]:
+        - img "Zac Rains smiling outdoors" [ref=f2e35]
+        - generic [ref=f2e36]: THE GUYBEHIND THELENS ↘
+      - generic [ref=f2e37]:
+        - paragraph [ref=f2e38]: Photographer, storm chaser, and professional third wheel.
+        - paragraph [ref=f2e39]: I chase the kind of images that feel like weather — a little imperfect, always honest, and impossible to fake. From Wisconsin back roads to the wild edges of Kenya, I wait for the split second that makes a story stick.
+        - generic [ref=f2e40]:
+          - generic [ref=f2e41]: Portraits
+          - generic [ref=f2e42]: Weddings
+          - generic [ref=f2e43]: Families
+          - generic [ref=f2e44]: Wild places
+        - link "See the work ↘" [ref=f2e45] [cursor=pointer]:
+          - /url: "#work"
+    - generic [ref=f2e46]:
+      - generic [ref=f2e47]: RAINS / CLOUDS / LIGHT / PRESENCE /
+      - generic [ref=f2e48]: RAINS / CLOUDS / LIGHT / PRESENCE /
+  - generic [ref=f2e49]:
+    - generic [ref=f2e50]:
+      - paragraph [ref=f2e51]: 03 Selected work
+      - heading [level=2] [ref=f2e52]:
+        - text: Frames
+        - emphasis [ref=f2e53]: worthkeeping.
+      - paragraph [ref=f2e54]: Keep scrolling→
+    - generic [ref=f2e55]:
+      - link "01 / Tsavo west ↗ 01 / Tsavo west wildlife / kenya" [ref=f2e56] [cursor=pointer]:
+        - /url: "#contact"
+        - generic [ref=f2e57]:
+          - img "01 / Tsavo west" [ref=f2e58]
+          - generic [ref=f2e59]: ↗
+        - generic [ref=f2e60]:
+          - strong [ref=f2e61]: 01 / Tsavo west
+          - generic [ref=f2e62]: wildlife / kenya
+      - link "02 / Wild things ↗ 02 / Wild things wildlife / 2024" [ref=f2e63] [cursor=pointer]:
+        - /url: "#contact"
+        - generic [ref=f2e64]:
+          - img "02 / Wild things" [ref=f2e65]
+          - generic [ref=f2e66]: ↗
+        - generic [ref=f2e67]:
+          - strong [ref=f2e68]: 02 / Wild things
+          - generic [ref=f2e69]: wildlife / 2024
+      - link "03 / Untamed ↗ 03 / Untamed wildlife / 2024" [ref=f2e70] [cursor=pointer]:
+        - /url: "#contact"
+        - generic [ref=f2e71]:
+          - img "03 / Untamed" [ref=f2e72]
+          - generic [ref=f2e73]: ↗
+        - generic [ref=f2e74]:
+          - strong [ref=f2e75]: 03 / Untamed
+          - generic [ref=f2e76]: wildlife / 2024
+      - link "04 / Solitude ↗ 04 / Solitude landscape / kenya" [ref=f2e77] [cursor=pointer]:
+        - /url: "#contact"
+        - generic [ref=f2e78]:
+          - img "04 / Solitude" [ref=f2e79]
+          - generic [ref=f2e80]: ↗
+        - generic [ref=f2e81]:
+          - strong [ref=f2e82]: 04 / Solitude
+          - generic [ref=f2e83]: landscape / kenya
+      - link "05 / Open country ↗ 05 / Open country light / 2024" [ref=f2e84] [cursor=pointer]:
+        - /url: "#contact"
+        - generic [ref=f2e85]:
+          - img "05 / Open country" [ref=f2e86]
+          - generic [ref=f2e87]: ↗
+        - generic [ref=f2e88]:
+          - strong [ref=f2e89]: 05 / Open country
+          - generic [ref=f2e90]: light / 2024
+      - link "06 / Final edits ↗ 06 / Final edits portrait / 2024" [ref=f2e91] [cursor=pointer]:
+        - /url: "#contact"
+        - generic [ref=f2e92]:
+          - img "06 / Final edits" [ref=f2e93]
+          - generic [ref=f2e94]: ↗
+        - generic [ref=f2e95]:
+          - strong [ref=f2e96]: 06 / Final edits
+          - generic [ref=f2e97]: portrait / 2024
+  - generic [ref=f2e98]:
+    - generic [ref=f2e99]:
+      - paragraph [ref=f2e100]: 04 Before the storm
+      - generic [ref=f2e101]: LET'S CONNECT
+    - generic [ref=f2e102]:
+      - generic [ref=f2e103]:
+        - heading [level=2] [ref=f2e104]:
+          - text: Let's make
+          - emphasis [ref=f2e105]: something
+          - text: real.
+        - link "astrozac@outlook.com ↗" [ref=f2e106] [cursor=pointer]:
+          - /url: mailto:astrozac@outlook.com
+      - button "Flip Zac Rains business card" [ref=f2e107] [cursor=pointer]:
+        - generic [ref=f2e108]:
+          - generic [ref=f2e109]:
+            - generic [ref=f2e110]: 01 / PERSONAL CARD
+            - generic [ref=f2e111]: EST. 2024
+          - generic [ref=f2e119]:
+            - generic [ref=f2e120]: RAINS
+            - generic [ref=f2e121]: PHOTOGRAPHY
+          - generic [ref=f2e122]:
+            - generic [ref=f2e123]: WISCONSIN / WORLDWIDE
+            - generic [ref=f2e124]: Flip to connect ↗
+        - generic [ref=f2e125]:
+          - generic [ref=f2e126]:
+            - generic [ref=f2e127]: 02 / CONTACT
+            - generic [ref=f2e128]: GOOD LIGHT
+          - generic: ZR
+          - generic [ref=f2e129]:
+            - generic [ref=f2e130]:
+              - generic [ref=f2e131]: PHOTO / FILM / STORY
+              - strong [ref=f2e132]: ZACRAINS
+              - emphasis [ref=f2e133]: PHOTOGRAPHER ///
+            - generic [ref=f2e134]:
+              - link "CALL 262—232—9332" [ref=f2e135]:
+                - /url: tel:262-232-9332
+                - generic [ref=f2e136]: CALL
+                - generic [ref=f2e137]: 262—232—9332
+              - link "MAIL astrozac@outlook.com" [ref=f2e138]:
+                - /url: mailto:astrozac@outlook.com
+                - generic [ref=f2e139]: MAIL
+                - generic [ref=f2e140]: astrozac@outlook.com
+              - link "WEB rainsphotography.com" [ref=f2e141]:
+                - /url: https://rainsphotography.com
+                - generic [ref=f2e142]: WEB
+                - generic [ref=f2e143]: rainsphotography.com
+          - generic [ref=f2e144]:
+            - generic [ref=f2e145]: PORTRAITS · COUPLES · FAMILIESWEDDINGS · EVENTS
+            - generic [ref=f2e146]: Flip back ↙
+    - generic [ref=f2e147]:
+      - generic [ref=f2e148]: © 2026 Zac Rains Photography
+      - generic [ref=f2e149]: Good light, even after the rain.
+      - link "Back to top ↑" [ref=f2e150] [cursor=pointer]:
+        - /url: "#top"

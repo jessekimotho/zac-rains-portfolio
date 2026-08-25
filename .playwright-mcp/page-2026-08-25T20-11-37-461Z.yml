@@ -1,0 +1,65 @@
+- main [ref=f1e3]:
+  - generic [ref=f1e4]:
+    - link "ActualFood QA home" [ref=f1e5] [cursor=pointer]:
+      - /url: /
+      - img "ActualFood" [ref=f1e6]
+      - generic [ref=f1e7]: QA
+    - navigation "Breadcrumb" [ref=f1e8]:
+      - generic [ref=f1e9]: Overview
+    - navigation "Primary navigation" [ref=f1e10]:
+      - link "New run" [ref=f1e11] [cursor=pointer]:
+        - /url: /new-run?fresh=1
+      - link "Past runs" [ref=f1e12] [cursor=pointer]:
+        - /url: /runs
+      - button "Switch to dark mode" [ref=f1e13] [cursor=pointer]:
+        - generic [ref=f1e14]: D
+        - generic [ref=f1e15]: Dark
+  - generic [ref=f1e16]:
+    - generic [ref=f1e17]:
+      - paragraph [ref=f1e18]: ACTUALFOOD / QUALITY ASSURANCE
+      - heading [level=1] [ref=f1e19]:
+        - text: Make confidence
+        - emphasis [ref=f1e20]: repeatable.
+      - paragraph [ref=f1e21]: Launch focused checks across every ActualFood app, then follow each result from first browser to final evidence.
+    - generic [ref=f1e22]:
+      - generic [ref=f1e23]: "01"
+      - generic [ref=f1e24]: RUNS
+      - generic [ref=f1e25]: TESTS
+  - region "Run actions" [ref=f1e26]:
+    - link "01 + Start a test run Choose an app, a device matrix, and the checks that matter right now. ->" [ref=f1e27] [cursor=pointer]:
+      - /url: /new-run?fresh=1
+      - generic [ref=f1e28]: "01"
+      - generic [ref=f1e29]: +
+      - generic [ref=f1e30]:
+        - heading "Start a test run" [level=2] [ref=f1e31]
+        - paragraph [ref=f1e32]: Choose an app, a device matrix, and the checks that matter right now.
+      - generic [ref=f1e33]: "->"
+    - link "02 ~ View past runs Review outcomes, screenshots, and individual test details. ->" [ref=f1e34] [cursor=pointer]:
+      - /url: /runs
+      - generic [ref=f1e35]: "02"
+      - generic [ref=f1e36]: ~
+      - generic [ref=f1e37]:
+        - heading "View past runs" [level=2] [ref=f1e38]
+        - paragraph [ref=f1e39]: Review outcomes, screenshots, and individual test details.
+      - generic [ref=f1e40]: "->"
+  - generic [ref=f1e41]:
+    - generic [ref=f1e42]:
+      - generic [ref=f1e43]:
+        - paragraph [ref=f1e44]: RECENT ACTIVITY
+        - heading "What happened lately" [level=2] [ref=f1e45]
+      - link "See all runs ->" [ref=f1e46] [cursor=pointer]:
+        - /url: /runs
+    - generic [ref=f1e47]: Recent activity will appear here.
+  - generic [ref=f1e48]:
+    - link "ActualFood QA home" [ref=f1e49] [cursor=pointer]:
+      - /url: /
+      - img "ActualFood" [ref=f1e50]
+      - generic [ref=f1e51]: QA
+    - navigation "Footer navigation" [ref=f1e52]:
+      - link "Overview" [ref=f1e53] [cursor=pointer]:
+        - /url: /
+      - link "Past runs" [ref=f1e54] [cursor=pointer]:
+        - /url: /runs
+      - link "New run" [ref=f1e55] [cursor=pointer]:
+        - /url: /new-run?fresh=1
+        - text: New run ->

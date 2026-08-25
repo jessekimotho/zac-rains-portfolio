@@ -1,0 +1,57 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - link "ActualFood QA home" [ref=e5] [cursor=pointer]:
+      - /url: /
+      - img "ActualFood" [ref=e6]
+      - generic [ref=e7]: QA
+    - navigation "Breadcrumb" [ref=e8]:
+      - generic [ref=e9]: Overview
+    - navigation "Primary navigation" [ref=e10]:
+      - link "New run" [ref=e11] [cursor=pointer]:
+        - /url: /new-run?fresh=1
+      - link "Past runs" [ref=e12] [cursor=pointer]:
+        - /url: /runs
+      - button "Switch to dark mode" [ref=e13] [cursor=pointer]:
+        - generic [ref=e14]: D
+        - generic [ref=e15]: Dark
+  - generic [ref=e16]:
+    - generic [ref=e17]:
+      - paragraph [ref=e18]: ACTUALFOOD / QUALITY ASSURANCE
+      - heading [level=1] [ref=e19]:
+        - text: Make confidence
+        - emphasis [ref=e20]: repeatable.
+      - paragraph [ref=e21]: Launch focused checks across every ActualFood app, then follow each result from first browser to final evidence.
+    - generic [ref=e22]:
+      - generic [ref=e23]: "01"
+      - generic [ref=e24]: RUNS
+      - generic [ref=e25]: TESTS
+  - region "Run actions" [ref=e26]:
+    - link "01 + Start a test run Choose an app, a device matrix, and the checks that matter right now. ->" [ref=e27] [cursor=pointer]:
+      - /url: /new-run?fresh=1
+      - generic [ref=e28]: "01"
+      - generic [ref=e29]: +
+      - generic [ref=e30]:
+        - heading "Start a test run" [level=2] [ref=e31]
+        - paragraph [ref=e32]: Choose an app, a device matrix, and the checks that matter right now.
+      - generic [ref=e33]: "->"
+    - link "02 ~ View past runs Review outcomes, screenshots, and individual test details. ->" [ref=e34] [cursor=pointer]:
+      - /url: /runs
+      - generic [ref=e35]: "02"
+      - generic [ref=e36]: ~
+      - generic [ref=e37]:
+        - heading "View past runs" [level=2] [ref=e38]
+        - paragraph [ref=e39]: Review outcomes, screenshots, and individual test details.
+      - generic [ref=e40]: "->"
+  - generic [ref=e41]:
+    - link "ActualFood QA home" [ref=e42] [cursor=pointer]:
+      - /url: /
+      - img "ActualFood" [ref=e43]
+      - generic [ref=e44]: QA
+    - navigation "Footer navigation" [ref=e45]:
+      - link "Overview" [ref=e46] [cursor=pointer]:
+        - /url: /
+      - link "Past runs" [ref=e47] [cursor=pointer]:
+        - /url: /runs
+      - link "New run" [ref=e48] [cursor=pointer]:
+        - /url: /new-run?fresh=1
+        - text: New run ->
