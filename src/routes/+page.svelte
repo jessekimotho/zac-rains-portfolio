@@ -40,6 +40,19 @@
 	);
 	let cardFlipped = false;
 	const cardBg = asset('776442682_1588100949420590_8353220821612154198_n.jpg');
+	/** @param {number} seed */
+	const seededRandom = (seed) => {
+		const value = Math.sin(seed * 12.9898) * 43758.5453;
+		return value - Math.floor(value);
+	};
+	const rainDrops = Array.from({ length: 250 }, (_, index) => ({
+		x: Math.floor(seededRandom(index + 1) * 100),
+		y: Math.floor(seededRandom(index + 101) * 100),
+		opacity: (0.13 + seededRandom(index + 201) * 0.28).toFixed(2),
+		duration: (0.85 + seededRandom(index + 301) * 1.35).toFixed(2),
+		delay: (-seededRandom(index + 401) * 2.2).toFixed(2),
+		scale: (0.38 + seededRandom(index + 501) * 0.62).toFixed(2)
+	}));
 
 	onMount(() => {
 		/** @type {(() => void) | undefined} */
@@ -103,6 +116,24 @@
 				cursor = Math.min(1, point() + transition / 2);
 			});
 		}
+		const aboutRain = document.querySelector('.about-rain');
+		if (aboutRain) {
+			// The rain is strongest while the about section is settled in view,
+			// then dissolves before the next chapter takes over.
+			gsap.set(aboutRain, { autoAlpha: 0 });
+			ScrollTrigger.create({
+				trigger: '.about',
+				start: 'top bottom',
+				end: 'bottom top',
+				scrub: true,
+				invalidateOnRefresh: true,
+				onUpdate: (self) => {
+					const fadeIn = Math.min(1, self.progress / 0.14);
+					const fadeOut = Math.min(1, (1 - self.progress) / 0.18);
+					gsap.set(aboutRain, { autoAlpha: Math.min(fadeIn, fadeOut) });
+				}
+			});
+		}
 		const slides = gsap.utils.toArray('.hero-slide');
 		let activeSlide = 0;
 		gsap.set(slides.slice(1), { autoAlpha: 0 });
@@ -120,6 +151,8 @@
 		/** @type {HTMLElement | null} */
 		const reelIntro = document.querySelector('.reel-intro');
 		/** @type {HTMLElement | null} */
+		const reelKeep = reelIntro ? reelIntro.querySelector('h2 em') : null;
+		/** @type {HTMLElement | null} */
 		const firstReelCard = document.querySelector('.reel-card');
 		if (reelTrack && reelIntro && firstReelCard && !compactLayout) {
 			// Stop with a large, intentional landing gap after the final frame.
@@ -130,18 +163,30 @@
 				: Math.min(760, Math.max(360, window.innerWidth * 0.42));
 			const trackStart = () => Math.max(0, reelTrack.offsetLeft);
 			const distance = () => Math.max(0, trackStart() + reelTrack.scrollWidth - window.innerWidth + trailingGap());
-			// Give the intro a longer pause before the cards travel across it.
-			const scrollEnd = () => `+=${distance() + window.innerHeight * 1.35}`;
+			// Hold the intro in place long enough to read and use it before the
+			// first frame starts travelling across the section.
+			const introPause = () => window.innerHeight * 2.5;
+			const scrollEnd = () => `+=${distance() + introPause()}`;
 			const fadeBounds = () => {
 				const totalDistance = distance();
-				const overlapStart = firstReelCard.offsetLeft - (reelIntro.offsetLeft + reelIntro.offsetWidth);
-				const overlapEnd = firstReelCard.offsetLeft + firstReelCard.offsetWidth - reelIntro.offsetLeft;
+				const pauseDistance = introPause();
+				const totalScroll = totalDistance + pauseDistance;
+				const travelStart = totalScroll ? pauseDistance / totalScroll : 0;
+				const travelSpan = totalScroll ? totalDistance / totalScroll : 1;
+				// Both elements use different offset parents, so include the track's
+				// starting position before comparing their horizontal bounds.
+				const firstCardStart = reelTrack.offsetLeft + firstReelCard.offsetLeft;
+				const introStart = reelIntro.offsetLeft;
+				const overlapStart = firstCardStart - (introStart + reelIntro.offsetWidth);
+				const overlapEnd = firstCardStart + firstReelCard.offsetWidth - introStart;
 				const overlap = Math.max(0, overlapEnd - overlapStart);
 				return {
-					// Keep the copy fully readable until the first image has clearly
-					// started covering the intro instead of fading on first contact.
-					start: totalDistance ? Math.max(0, (overlapStart + overlap * 0.3) / totalDistance) : 0,
-					end: totalDistance ? Math.min(1, overlapEnd / totalDistance) : 1
+					// Keep the copy fully readable during the pause and until the first
+					// image has clearly started covering the intro.
+					// Give the whole intro a slower, more deliberate fade as the image
+					// travels across it instead of dropping away at first overlap.
+					start: travelStart + (totalDistance ? Math.max(0, overlapStart + overlap * 0.15) / totalDistance * travelSpan : 0),
+					end: travelStart + (totalDistance ? Math.min(1, (overlapEnd + overlap * 0.25) / totalDistance) * travelSpan : travelSpan)
 				};
 			};
 			const reelScrollTrigger = {
@@ -158,9 +203,18 @@
 					const { start, end } = fadeBounds();
 					const fade = Math.min(1, Math.max(0, (progress - start) / Math.max(0.001, end - start)));
 					gsap.set(reelIntro, { autoAlpha: 1 - fade });
+					if (reelKeep) {
+						// Start shifting as soon as the pinned section begins, and finish
+						// the color change before the copy starts fading.
+						const colorProgress = Math.min(1, Math.max(0, progress / Math.max(0.001, start)));
+						const deepBlue = gsap.utils.interpolate('#4ca6d8', '#2d6f98', colorProgress);
+						gsap.set(reelKeep, { color: deepBlue });
+					}
 				}
 			};
-			gsap.to(reelTrack, { x: () => -distance(), ease: 'none', scrollTrigger: reelScrollTrigger });
+			const reelTimeline = gsap.timeline({ scrollTrigger: reelScrollTrigger });
+			reelTimeline.to({}, { duration: () => introPause() / Math.max(1, distance()) })
+				.to(reelTrack, { x: () => -distance(), duration: 1, ease: 'none' });
 		}
 			cleanup = () => {
 				slideshow.kill();
@@ -201,6 +255,13 @@
 
 		<div class="rain-break" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 		<section class="about chapter" id="about">
+			<div class="about-rain" aria-hidden="true">
+				{#each rainDrops as drop}
+					<svg class="about-rain__drop" preserveAspectRatio="xMinYMin meet" viewBox="0 0 5 50" style={`--x:${drop.x};--y:${drop.y};--o:${drop.opacity};--a:${drop.duration};--d:${drop.delay};--s:${drop.scale}`}>
+						<path d="M 2.5,0 C 2.6949458,3.5392017 3.344765,20.524571 4.4494577,30.9559 5.7551357,42.666753 4.5915685,50 2.5,50 0.40843152,50 -0.75513565,42.666753 0.55054234,30.9559 1.655235,20.524571 2.3050542,3.5392017 2.5,0 Z" />
+					</svg>
+				{/each}
+			</div>
 			<div class="section-top reveal"><p class="eyebrow"><span>02</span> The person behind the storm</p><span class="section-index">ABOUT / 2026</span></div>
 			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains smiling outdoors" /><span>THE GUY<br />BEHIND THE<br />LENS ↘</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storm chaser, and professional third wheel.</p><p>I chase the kind of images that feel like weather — a little imperfect, always honest, and impossible to fake. From Wisconsin back roads to the wild edges of Kenya, I wait for the split second that makes a story stick.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Wild places</span></div></div></div>
 			<div class="about-marquee" aria-hidden="true"><div class="about-marquee-track"><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span></div><div class="about-marquee-track"><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span></div></div>
@@ -212,7 +273,7 @@
 		</section>
 
 		<section class="contact chapter" id="contact">
-			<div class="contact-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-b"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-c"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-d"><i></i><i></i><i></i><i></i><i></i></span><span class="puddle puddle-e"><i></i><i></i><i></i><i></i><i></i></span></div>
+			<div class="contact-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i></span><span class="puddle puddle-b"><i></i></span><span class="puddle puddle-c"><i></i></span><span class="puddle puddle-d"><i></i></span></div>
 			<div class="section-top"><p class="eyebrow"><span>04</span> Before the storm</p><span class="section-index">LET'S CONNECT</span></div>
 			<div class="contact-layout"><div><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a></div><button class="business-card" class:flipped={cardFlipped} onclick={() => (cardFlipped = !cardFlipped)} aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
 				<span class="card-face card-front" style="--card-bg: url({cardBg})">
@@ -349,7 +410,6 @@
 	.contact-puddles .puddle-b{transform:rotate(9deg)}
 	.contact-puddles .puddle-c{transform:rotate(-4deg)}
 	.contact-puddles .puddle-d{transform:rotate(13deg)}
-	.contact-puddles .puddle-e{top:18%;right:34%;width:clamp(100px,13vw,220px);transform:rotate(-15deg)}
 	@keyframes puddle-ripple{0%{opacity:.04;transform:scale(.08,.08)}8%{opacity:.68}28%{opacity:.32}72%{opacity:.1}100%{opacity:0;transform:scale(1.12,1.12)}}
 	@media(prefers-reduced-motion:reduce){.contact-puddles .puddle i{animation:none}.contact-puddles .puddle i:first-child{opacity:.18;transform:scale(1)}}
 
@@ -439,19 +499,11 @@
 	.contact > .section-top,.contact > .contact-layout,.contact > .contact-footer{z-index:1}
 	.contact-puddles .puddle{
 		width:clamp(190px,23vw,390px);
-		aspect-ratio:1.72;
+		aspect-ratio:1;
 		border:0;
 		border-radius:50%;
-		background:radial-gradient(ellipse at center,
-			rgba(255,255,255,.12) 0 1.1%,
-			transparent 1.5% 11%,
-			rgba(20,91,137,.14) 11.3% 11.8%,
-			transparent 12.2% 22%,
-			rgba(20,91,137,.11) 22.3% 22.8%,
-			transparent 23.2% 33%,
-			rgba(20,91,137,.08) 33.3% 33.8%,
-			transparent 34.2% 100%);
-		opacity:.72;
+		background:transparent;
+		opacity:.82;
 		transform:none;
 		animation:none;
 		contain:layout paint;
@@ -461,50 +513,61 @@
 		display:block;
 		content:'';
 		position:absolute;
-		inset:46.8% 48.7%;
+		inset:calc(50% - 3px);
+		width:6px;
+		height:6px;
 		border:0;
 		border-radius:50%;
-		background:rgba(255,255,255,.2);
-		box-shadow:0 0 0 5px rgba(255,255,255,.035);
-		animation:none;
+		background:rgba(255,255,255,.55);
+		box-shadow:none;
+		animation:drop-point 9s ease-out infinite;
+		will-change:transform,opacity;
+	}
+	.contact-puddles .puddle::after{
+		display:none;
 	}
 	.contact-puddles .puddle i{
+		display:none;
+	}
+	.contact-puddles .puddle i:first-child{
 		position:absolute;
 		inset:0;
 		display:block;
-		border:1px solid rgba(15,78,120,.2);
+		border:8px solid rgba(10,73,118,.82);
 		border-radius:50%;
 		opacity:0;
-		transform:scale(.06,.06);
+		transform:scale(.04);
 		transform-origin:center;
-		animation:aerial-ripple 9.5s cubic-bezier(.18,.56,.25,1) infinite;
+		animation:soft-ripple 9s cubic-bezier(.18,.56,.25,1) infinite;
 		will-change:transform,opacity;
-		filter:blur(.15px);
+		filter:blur(.25px);
 	}
-	.contact-puddles .puddle i:nth-child(2){animation-delay:-1.9s}
-	.contact-puddles .puddle i:nth-child(3){animation-delay:-3.8s}
-	.contact-puddles .puddle i:nth-child(4){animation-delay:-5.7s}
-	.contact-puddles .puddle i:nth-child(5){animation-delay:-7.6s}
-	.contact-puddles .puddle i:nth-child(even){border-color:rgba(255,255,255,.22)}
-	.contact-puddles .puddle-b{top:34%;right:5%;width:clamp(250px,31vw,530px);transform:rotate(7deg)}
-	.contact-puddles .puddle-c{bottom:-1%;left:35%;width:clamp(220px,27vw,460px);transform:rotate(-4deg)}
-	.contact-puddles .puddle-d{top:58%;left:-4%;width:clamp(150px,18vw,300px);transform:rotate(11deg)}
-	.contact-puddles .puddle-e{top:18%;right:34%;width:clamp(115px,14vw,230px);transform:rotate(-12deg)}
-	@keyframes aerial-ripple{
-		0%{opacity:0;transform:scale(.06,.06)}
-		10%{opacity:.44}
-		35%{opacity:.22}
-		72%{opacity:.08}
-		100%{opacity:0;transform:scale(1.08,1.08)}
+	.contact-puddles .puddle-b{top:34%;right:5%;width:clamp(250px,31vw,530px);transform:none}
+	.contact-puddles .puddle-c{bottom:-1%;left:35%;width:clamp(220px,27vw,460px);transform:none}
+	.contact-puddles .puddle-d{top:58%;left:-4%;width:clamp(150px,18vw,300px);transform:none}
+	.contact-puddles .puddle-b i:first-child,.contact-puddles .puddle-b::before{animation-delay:-4.5s}
+	.contact-puddles .puddle-c i:first-child,.contact-puddles .puddle-c::before{animation-delay:-2.7s}
+	.contact-puddles .puddle-d i:first-child,.contact-puddles .puddle-d::before{animation-delay:-6.6s}
+	@keyframes drop-point{
+		0%{opacity:.64;transform:scale(.4)}
+		8%{opacity:.5;transform:scale(1)}
+		20%,100%{opacity:0;transform:scale(1.2)}
 	}
-	@media(prefers-reduced-motion:reduce){.contact-puddles .puddle i{animation:none}.contact-puddles .puddle i:first-child{opacity:.18;transform:scale(1)}}
+	@keyframes soft-ripple{
+		0%{opacity:0;transform:scale(.04)}
+		6%{opacity:.5}
+		14%{opacity:.94}
+		38%{opacity:.7}
+		68%{opacity:.28}
+		100%{opacity:0;transform:scale(1.08)}
+	}
+	@media(prefers-reduced-motion:reduce){.contact-puddles .puddle i:first-child,.contact-puddles .puddle::before{animation:none}.contact-puddles .puddle i:first-child{opacity:.32;transform:scale(1)}}
 	@media(max-width:760px){
 		.contact{background:#4ca6d8}
 		.contact-puddles .puddle{width:clamp(180px,64vw,300px)}
 		.contact-puddles .puddle-b{top:31%;right:-20%;width:clamp(260px,88vw,430px)}
 		.contact-puddles .puddle-c{bottom:6%;left:28%;width:clamp(210px,72vw,350px)}
 		.contact-puddles .puddle-d{top:57%;left:-30%;width:clamp(175px,60vw,280px)}
-		.contact-puddles .puddle-e{top:16%;right:19%;width:clamp(110px,36vw,190px)}
 	}
 	/* Vertical scroll depth layers */
 	.hero-portrait,.about h2,.about-portrait img,.large-copy,.contact-glow,.contact h2{will-change:transform}
@@ -613,5 +676,49 @@
 		.about h2{font-size:4.05rem}
 		.reel-card,.reel-card.hero-card{width:78vw;min-width:78vw}
 		.card-topline,.card-bottomline{font-size:6.5px}
+	}
+
+	/* A quiet veil of rain behind the about story. The SVGs share one path,
+	   while their seeded variables keep the field varied and hydration-safe. */
+	.about-rain{
+		position:absolute;
+		inset:0;
+		z-index:0;
+		overflow:hidden;
+		pointer-events:none;
+		opacity:.58;
+		contain:paint;
+	}
+	.about > .section-top,.about > .about-layout,.about > .about-marquee{
+		position:relative;
+		z-index:1;
+	}
+	.about-rain__drop{
+		position:absolute;
+		left:calc(var(--x) * 1%);
+		top:calc(var(--y) * 1% - 18vh);
+		width:clamp(2px,.28vw,4px);
+		height:clamp(22px,4vh,42px);
+		animation:about-rain-fall calc(var(--a) * 1s) linear calc(var(--d) * 1s) infinite;
+		will-change:transform,opacity;
+	}
+	.about-rain__drop path{
+		fill:rgba(76,166,216,.95);
+		opacity:var(--o);
+		transform:scaleY(var(--s));
+		transform-origin:top center;
+	}
+	@keyframes about-rain-fall{
+		0%{opacity:0;transform:translate3d(0,0,0)}
+		12%{opacity:1}
+		88%{opacity:1;transform:translate3d(-1.2vw,105vh,0)}
+		100%{opacity:0;transform:translate3d(-1.4vw,115vh,0)}
+	}
+	@media(max-width:760px){
+		.about-rain{opacity:.48}
+		.about-rain__drop{width:2px;height:clamp(18px,3.4vh,30px)}
+	}
+	@media(prefers-reduced-motion:reduce){
+		.about-rain__drop{animation:none}
 	}
 	</style>
