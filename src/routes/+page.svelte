@@ -4,12 +4,55 @@
 	/** @param {string} filename */
 	const asset = (filename) => `/${encodeURIComponent(filename)}`;
 	const portrait = asset('707453577_17965332306081022_639360383094076295_n.jpg');
-	const heroSlides = [
+	/** @type {Array<[string, string]>} */
+	let heroSlides = [
 		['reel-tsavo.jpg', 'Tsavo west'],
 		['reel-giraffe.jpg', 'Wild things'],
 		['reel-rhino.jpg', 'Untamed'],
-		['reel-baobab.jpg', 'Solitude']
+		['reel-baobab.jpg', 'Solitude'],
+		['reel-open-country.jpg', 'Open country'],
+		['reel-portrait.jpg', 'Final edits'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029.jpg', 'Great day'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_2.jpg', 'Tsavo light'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_3.jpg', 'Wild country'],
+		['zacrains_2024-01-04_C1rMdWuqEDY_3272764348042854616.jpg', 'First light'],
+		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433.jpg', 'Open range'],
+		['zacrains_2024-07-06_C9EwzxDstvM_3406061881800186828.jpg', 'Dust and gold'],
+		['zacrains_2024-07-13_C9XuO6YM2JB_3411398577651671617.jpg', 'Blue water'],
+		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971.jpg', 'Red in the woods'],
+		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', 'Gentle giant'],
+		['zacrains_2024-01-04_C1rMdWuqEDY_3272764348042854616_3.jpg', 'Morning hush'],
+		['zacrains_2024-01-04_C1rMdWuqEDY_3272764348042854616_4.jpg', 'First horizon'],
+		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_3.jpg', 'Across the plains'],
+		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_4.jpg', 'Warm country'],
+		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_5.jpg', 'Far country'],
+		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_6.jpg', 'Wild light'],
+		['zacrains_2024-08-27_C_J3bzvv71p_3443527193647365481_2.jpg', 'Between seasons'],
+		['zacrains_2024-08-27_C_J3bzvv71p_3443527193647365481_3.jpg', 'Forest quiet'],
+		['zacrains_2024-08-27_C_J3xgvPBsP_3443528685066132239_2.jpg', 'Soft passage'],
+		['zacrains_2024-08-27_C_J3xgvPBsP_3443528685066132239_3.jpg', 'Green room'],
+		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971_2.jpg', 'Last red light'],
+		['zacrains_2024-08-27_C_LdAfEusmf_3443973916769044895.jpg', 'Hidden path'],
+		['zacrains_2024-08-27_C_LdPasOBgW_3443974942855010326.jpg', 'Still morning'],
+		['zacrains_2024-08-27_C_LdPasOBgW_3443974942855010326_2.jpg', 'A little farther'],
+		['zacrains_2024-08-27_C_LdPasOBgW_3443974942855010326_3.jpg', 'Quiet passage'],
+		['zacrains_2024-08-27_C_LdVjGu5QZ_3443975364206629913.jpg', 'Understory'],
+		['zacrains_2024-08-27_C_LdVjGu5QZ_3443975364206629913_2.jpg', 'Into green'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_4.jpg', 'Open sky'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_5.jpg', 'Amber hour'],
+		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_6.jpg', 'After the rain']
 	];
+	/** @param {Array<[string, string]>} slides @returns {Array<[string, string]>} */
+	const shuffleSlides = (slides) => {
+		const shuffled = [...slides];
+		for (let index = shuffled.length - 1; index > 0; index -= 1) {
+			const swapIndex = Math.floor(Math.random() * (index + 1));
+			[shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+		}
+		return shuffled;
+	};
+	// Curated from the verified static library. Keep filenames ASCII-safe so the
+	// browser can request every frame reliably after URL encoding.
 	const reel = [
 		['reel-tsavo.jpg', '01 / Tsavo west', 'wildlife / kenya'],
 		['reel-giraffe.jpg', '02 / Wild things', 'wildlife / 2024'],
@@ -18,26 +61,13 @@
 		['reel-open-country.jpg', '05 / Open country', 'light / 2024'],
 		['reel-portrait.jpg', '06 / Final edits', 'portrait / 2024'],
 		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029.jpg', '07 / Great day', 'wildlife / tsavo'],
-		['zacrains_Where_the_wild_things_roam..._🦒🦒_2024-07-12_C9UCViVMitB_3410361093891173185.jpg', '08 / Wild things', 'wildlife / kenya'],
-		['zacrains_Majestic_and_untamed_#SavannahLife_#Rhinos_#KenyaWildlife_#M_2024-07-09_C9MPiDUsr12_3408167328740982134.jpg', '09 / Untamed', 'wildlife / kenya'],
-		['zacrains_Nature’s_jaws_of_steel!_This_Nile_crocodile_in_Kenya’s_water_2024-07-09_C9NY1OlMZ4c_3408489703894261276.jpg', '10 / Jaws of steel', 'wildlife / kenya'],
-		['zacrains_Solitude_and_strength🌳_#Kenya_#Wilderness_#tsavowest_#baobab_2024-07-29_C-AVEwmuciX_3422828402845534359.jpg', '11 / Solitude', 'landscape / tsavo'],
-		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', '12 / Gentle giant', 'wildlife / kenya'],
-		['zacrains_Final_edits_from_this_week🤩🤩_#absolutlystunning_2024-06-02_C7uHG8usL52_3381671634052103798.jpg', '13 / Quiet plains', 'wildlife / kenya'],
-		['zacrains_One_of_my_favorite_nights_to_photograph_every_year._🇺🇸🦅🎆_2026-07-05_DaZjZvCjoNC_3934331449608405826.jpg', '14 / After dark', 'night / 2026']
-	];
-	// Keep the reel limited to filenames verified in /static. The original
-	// social-export names above contain characters that can be corrupted in URLs.
-	reel.splice(6, 8,
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029.jpg', '07 / Great day', 'wildlife / tsavo'],
 		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_2.jpg', '08 / Tsavo light', 'wildlife / tsavo'],
 		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_3.jpg', '09 / Wild country', 'wildlife / tsavo'],
 		['zacrains_2024-07-13_C9XuO6YM2JB_3411398577651671617.jpg', '10 / Blue water', 'light / 2024'],
-		['zacrains_Kenya_is_such_a_beautiful_country!🇰🇪🇰🇪_2024-04-17_C53pP9Qszq7_3348326264450792123.jpg', '11 / Wide open', 'landscape / kenya'],
-		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971.jpg', '12 / Red in the woods', 'motion / 2024'],
-		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', '13 / Gentle giant', 'wildlife / kenya'],
-		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097_2.jpg', '14 / Close encounter', 'wildlife / kenya']
-	);
+		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971.jpg', '11 / Red in the woods', 'motion / 2024'],
+		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', '12 / Gentle giant', 'wildlife / kenya'],
+		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097_2.jpg', '13 / Close encounter', 'wildlife / kenya']
+	];
 	let cardFlipped = false;
 	const cardBg = asset('776442682_1588100949420590_8353220821612154198_n.jpg');
 	/** @param {PointerEvent} event */
@@ -90,6 +120,7 @@
 		/** @type {(() => void) | undefined} */
 		let cleanup;
 		let destroyed = false;
+		heroSlides = shuffleSlides(heroSlides);
 
 		Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([gsapModule, scrollTriggerModule]) => {
 			if (destroyed) return;
@@ -836,4 +867,15 @@
 	:global(.low-power) .reel-photo img{transition:none;filter:none}
 	:global(.low-power) .reel-track{will-change:transform}
 	:global(.low-power) .business-card{will-change:auto;transition:none;filter:none}
+
+	/* Square image theme: every homepage photograph gets the same frame language. */
+	.hero-portrait{aspect-ratio:1;height:auto;min-height:0;border:0;background:#172326}
+	.hero-portrait{max-height:min(78vw,760px)}
+	.hero-slide:not(:first-child){opacity:0;visibility:hidden}
+	.about-portrait{aspect-ratio:3/4;height:auto;min-height:0;border:0;background:#ccd4c9}
+	.reel-photo{aspect-ratio:4/5;height:auto;min-height:0;border:0;background:#283331}
+	.reel-card.hero-card .reel-photo{aspect-ratio:3/4}
+	.reel-photo::after{display:none}
+	.reel-photo img{object-fit:cover;object-position:center}
+	@media(max-width:760px){.hero-portrait{max-height:none}.about-portrait{max-width:none}}
 	</style>
