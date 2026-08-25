@@ -165,26 +165,59 @@
 			});
 		}
 		const ambientBackground = document.querySelector('.ambient-background');
+		/** @type {(() => void) | undefined} */
+		let stopMobileBackground;
 		if (ambientBackground) {
 			const sections = gsap.utils.toArray('.chapter');
-			const colors = ['#0a0e0e', '#edf0e8', '#111817', '#4ca6d8'];
-			const transition = 0.08;
-			const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-			const backgroundTimeline = gsap.timeline({
-				scrollTrigger: { trigger: '.shell', start: 'top top', end: 'bottom bottom', scrub: 1, invalidateOnRefresh: true }
-			});
-			let cursor = 0;
-			sections.forEach((section, index) => {
-				if (index === 0) {
-					gsap.set(ambientBackground, { backgroundColor: colors[0] });
-					return;
-				}
-				const point = () => section.offsetTop / maxScroll();
-				const start = () => Math.max(cursor, point() - transition / 2);
-				backgroundTimeline.to({}, { duration: () => Math.max(0, start() - cursor) });
-				backgroundTimeline.to(ambientBackground, { backgroundColor: colors[index], duration: transition, ease: 'none' });
-				cursor = Math.min(1, point() + transition / 2);
-			});
+			const colors = compactLayout
+				? ['#0a0e0e', '#edf0e8', '#4ca6d8', '#4ca6d8']
+				: ['#0a0e0e', '#edf0e8', '#111817', '#4ca6d8'];
+			if (compactLayout) {
+				// On phones the next chapter needs to color the viewport before its
+				// content arrives, otherwise the frames enter on the old light field.
+				const updateMobileBackground = () => {
+					const probe = window.scrollY + window.innerHeight * 0.22;
+					const lead = Math.min(window.innerHeight * 0.36, 240);
+					let color = colors[0];
+					for (let index = 1; index < sections.length; index += 1) {
+						const top = sections[index].getBoundingClientRect().top + window.scrollY;
+						const start = top - lead;
+						const end = top + lead * 0.28;
+						if (probe <= start) break;
+						if (probe < end) {
+							color = gsap.utils.interpolate(colors[index - 1], colors[index], (probe - start) / (end - start));
+							break;
+						}
+						color = colors[index];
+					}
+					gsap.set(ambientBackground, { backgroundColor: color });
+				};
+				updateMobileBackground();
+				window.addEventListener('scroll', updateMobileBackground, { passive: true });
+				window.addEventListener('resize', updateMobileBackground);
+				stopMobileBackground = () => {
+					window.removeEventListener('scroll', updateMobileBackground);
+					window.removeEventListener('resize', updateMobileBackground);
+				};
+			} else {
+				const transition = 0.08;
+				const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+				const backgroundTimeline = gsap.timeline({
+					scrollTrigger: { trigger: '.shell', start: 'top top', end: 'bottom bottom', scrub: 1, invalidateOnRefresh: true }
+				});
+				let cursor = 0;
+				sections.forEach((section, index) => {
+					if (index === 0) {
+						gsap.set(ambientBackground, { backgroundColor: colors[0] });
+						return;
+					}
+					const point = () => section.offsetTop / maxScroll();
+					const start = () => Math.max(cursor, point() - transition / 2);
+					backgroundTimeline.to({}, { duration: () => Math.max(0, start() - cursor) });
+					backgroundTimeline.to(ambientBackground, { backgroundColor: colors[index], duration: transition, ease: 'none' });
+					cursor = Math.min(1, point() + transition / 2);
+				});
+			}
 		}
 		const aboutRain = document.querySelector('.about-rain');
 		if (aboutRain) {
@@ -313,6 +346,7 @@
 		}
 			cleanup = () => {
 				slideshow.kill();
+				stopMobileBackground?.();
 				ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 			};
 		});
@@ -365,7 +399,7 @@
 		<section class="work-reel chapter" id="work">
 			<div class="contact-puddles work-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i></span><span class="puddle puddle-b"><i></i></span><span class="puddle puddle-c"><i></i></span><span class="puddle puddle-d"><i></i></span></div>
 			<div class="reel-intro"><p class="eyebrow"><span>03</span> Selected work</p><h2>Frames<br /><em>worth<br />keeping.</em></h2><p class="reel-hint">Keep scrolling<br /><span>→</span></p></div>
-			<div class="reel-track">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading={i < 2 ? 'eager' : 'lazy'} decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
+			<div class="reel-track" role="region" aria-label="Selected work photo album">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
 		</section>
 
 		<section class="contact chapter" id="contact">
@@ -758,10 +792,17 @@
 		.about-marquee{margin-top:clamp(112px,18vh,170px);margin-bottom:clamp(76px,12vh,112px)}
 
 		.work-reel{display:block;min-height:auto;padding-block:clamp(88px,13vh,132px) clamp(72px,11vh,108px)}
+		.work-reel{background:transparent;color:#0b1b24;padding-block:clamp(56px,9vh,88px) clamp(64px,10vh,96px)}
 		.reel-intro{padding-inline:clamp(18px,7vw,28px)}
-		.reel-intro h2{font-size:clamp(3.8rem,16vw,5.9rem);line-height:.82;margin:clamp(48px,8vh,68px) 0 32px}
-		.reel-hint{line-height:1.7}
-		.reel-track{width:auto;gap:14px;padding:clamp(18px,4vh,30px) clamp(18px,7vw,28px) 44px;overflow-x:auto;overflow-y:visible}
+		.reel-intro h2{font-size:clamp(3.8rem,16vw,5.9rem);line-height:.82;margin:clamp(34px,6vh,48px) 0 18px}
+		.reel-hint{font-size:0;line-height:1.7}
+		.reel-hint::before{content:'Swipe across';display:block;font:9px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.1em;color:#8f9d98}
+		.work-reel .reel-hint{color:rgba(11,27,36,.72)}
+		.work-reel .reel-hint span{color:#fff}
+		.work-reel h2 em{color:#fff}
+		.work-reel .reel-meta{color:rgba(11,27,36,.72)}
+		.work-reel .reel-meta strong{color:#0b1b24}
+		.reel-track{width:100%;max-width:100vw;min-width:0;gap:14px;padding:12px clamp(18px,7vw,28px) 44px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pinch-zoom}
 		.reel-card,.reel-card.hero-card{width:min(78vw,320px);min-width:min(78vw,320px);margin:0}
 		.reel-meta{font-size:9px;gap:8px;padding-top:12px;line-height:1.35}
 		.reel-meta strong{max-width:62%}
