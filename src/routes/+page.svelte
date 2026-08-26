@@ -2,45 +2,20 @@
 	import { onMount } from 'svelte';
 
 	/** @param {string} filename */
-	const asset = (filename) => `/${encodeURIComponent(filename)}`;
-	const portrait = asset('707453577_17965332306081022_639360383094076295_n.jpg');
+	const asset = (filename) => `/${filename.split('/').map(encodeURIComponent).join('/')}`;
+	const portrait = asset('newer/optimized/D7B805B9-7968-4B1C-B69A-32EA8EFD1393-Topaz-Gigapixel-4X-2.jpg');
 	/** @type {Array<[string, string]>} */
 	let heroSlides = [
-		['reel-tsavo.jpg', 'Tsavo west'],
-		['reel-giraffe.jpg', 'Wild things'],
-		['reel-rhino.jpg', 'Untamed'],
-		['reel-baobab.jpg', 'Solitude'],
-		['reel-open-country.jpg', 'Open country'],
-		['reel-portrait.jpg', 'Final edits'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029.jpg', 'Great day'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_2.jpg', 'Tsavo light'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_3.jpg', 'Wild country'],
-		['zacrains_2024-01-04_C1rMdWuqEDY_3272764348042854616.jpg', 'First light'],
-		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433.jpg', 'Open range'],
-		['zacrains_2024-07-06_C9EwzxDstvM_3406061881800186828.jpg', 'Dust and gold'],
-		['zacrains_2024-07-13_C9XuO6YM2JB_3411398577651671617.jpg', 'Blue water'],
-		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971.jpg', 'Red in the woods'],
-		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', 'Gentle giant'],
-		['zacrains_2024-01-04_C1rMdWuqEDY_3272764348042854616_3.jpg', 'Morning hush'],
-		['zacrains_2024-01-04_C1rMdWuqEDY_3272764348042854616_4.jpg', 'First horizon'],
-		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_3.jpg', 'Across the plains'],
-		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_4.jpg', 'Warm country'],
-		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_5.jpg', 'Far country'],
-		['zacrains_2024-04-03_C5TtCr8ML4R_3338209845524348433_6.jpg', 'Wild light'],
-		['zacrains_2024-08-27_C_J3bzvv71p_3443527193647365481_2.jpg', 'Between seasons'],
-		['zacrains_2024-08-27_C_J3bzvv71p_3443527193647365481_3.jpg', 'Forest quiet'],
-		['zacrains_2024-08-27_C_J3xgvPBsP_3443528685066132239_2.jpg', 'Soft passage'],
-		['zacrains_2024-08-27_C_J3xgvPBsP_3443528685066132239_3.jpg', 'Green room'],
-		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971_2.jpg', 'Last red light'],
-		['zacrains_2024-08-27_C_LdAfEusmf_3443973916769044895.jpg', 'Hidden path'],
-		['zacrains_2024-08-27_C_LdPasOBgW_3443974942855010326.jpg', 'Still morning'],
-		['zacrains_2024-08-27_C_LdPasOBgW_3443974942855010326_2.jpg', 'A little farther'],
-		['zacrains_2024-08-27_C_LdPasOBgW_3443974942855010326_3.jpg', 'Quiet passage'],
-		['zacrains_2024-08-27_C_LdVjGu5QZ_3443975364206629913.jpg', 'Understory'],
-		['zacrains_2024-08-27_C_LdVjGu5QZ_3443975364206629913_2.jpg', 'Into green'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_4.jpg', 'Open sky'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_5.jpg', 'Amber hour'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_6.jpg', 'After the rain']
+		['newer/optimized/Fuller -051.jpg', 'Winter bride'],
+		['newer/optimized/Fuller -024.jpg', 'The groomsmen'],
+		['newer/optimized/DSC_9880.jpg', 'At the coffee bar'],
+		['newer/optimized/DSC_9986-2.jpg', 'Hands at work'],
+		['newer/optimized/DSC_0246.jpg', 'A room with a story'],
+		['newer/optimized/DSC_0232.jpg', 'Jewelry in focus'],
+		['newer/optimized/Fuller -116.jpg', 'The bridal party'],
+		['newer/optimized/DSC_0132.jpg', 'The pour'],
+		['newer/optimized/Fuller -001.jpg', 'Wedding details'],
+		['newer/optimized/D7B805B9-7968-4B1C-B69A-32EA8EFD1393-Topaz-Gigapixel-4X-2.jpg', 'Zac Rains']
 	];
 	/** @param {Array<[string, string]>} slides @returns {Array<[string, string]>} */
 	const shuffleSlides = (slides) => {
@@ -51,25 +26,25 @@
 		}
 		return shuffled;
 	};
-	// Curated from the verified static library. Keep filenames ASCII-safe so the
-	// browser can request every frame reliably after URL encoding.
+	// Curated from the compressed newer set so the gallery loads quickly without
+	// asking the browser to decode the full-resolution archive files.
 	const reel = [
-		['reel-tsavo.jpg', '01 / Tsavo west', 'wildlife / kenya'],
-		['reel-giraffe.jpg', '02 / Wild things', 'wildlife / 2024'],
-		['reel-rhino.jpg', '03 / Untamed', 'wildlife / 2024'],
-		['reel-baobab.jpg', '04 / Solitude', 'landscape / kenya'],
-		['reel-open-country.jpg', '05 / Open country', 'light / 2024'],
-		['reel-portrait.jpg', '06 / Final edits', 'portrait / 2024'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029.jpg', '07 / Great day', 'wildlife / tsavo'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_2.jpg', '08 / Tsavo light', 'wildlife / tsavo'],
-		['zacrains_Great_day_at_Tsavo_West_National_Park_2024-04-27_C6RmYO2sZEt_3355631988352586029_3.jpg', '09 / Wild country', 'wildlife / tsavo'],
-		['zacrains_2024-07-13_C9XuO6YM2JB_3411398577651671617.jpg', '10 / Blue water', 'light / 2024'],
-		['zacrains_2024-08-27_C_J4I_xO-Oz_3443530298933633971.jpg', '11 / Red in the woods', 'motion / 2024'],
-		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097.jpg', '12 / Gentle giant', 'wildlife / kenya'],
-		['zacrains_Touching_the_gentle_giant_2024-08-01_C-Ioh-Nu9BB_3425165773020844097_2.jpg', '13 / Close encounter', 'wildlife / kenya']
+		['newer/optimized/Fuller -051.jpg', '01 / Winter bride', 'weddings / wisconsin'],
+		['newer/optimized/Fuller -024.jpg', '02 / The groomsmen', 'people / 2025'],
+		['newer/optimized/Fuller -041.jpg', '03 / Getting ready', 'weddings / 2025'],
+		['newer/optimized/DSC_9880.jpg', '04 / At the coffee bar', 'documentary / people'],
+		['newer/optimized/DSC_9986-2.jpg', '05 / Hands at work', 'craft / black and white'],
+		['newer/optimized/DSC_9956.jpg', '06 / The workbench', 'detail / studio'],
+		['newer/optimized/DSC_0246.jpg', '07 / A room with a story', 'places / interiors'],
+		['newer/optimized/DSC_0232.jpg', '08 / Jewelry in focus', 'product / detail'],
+		['newer/optimized/DSC_0132.jpg', '09 / The pour', 'food / process'],
+		['newer/optimized/Fuller -116.jpg', '10 / The bridal party', 'weddings / 2025'],
+		['newer/optimized/Fuller -002.jpg', '11 / Wedding details', 'details / weddings'],
+		['newer/optimized/Fuller -001.jpg', '12 / Before the vows', 'details / weddings'],
+		['newer/optimized/D7B805B9-7968-4B1C-B69A-32EA8EFD1393-Topaz-Gigapixel-4X-2.jpg', '13 / The photographer', 'portrait / zac rains']
 	];
 	let cardFlipped = false;
-	const cardBg = asset('776442682_1588100949420590_8353220821612154198_n.jpg');
+	const cardBg = asset('card-background.jpg');
 	/** @param {PointerEvent} event */
 	const handleCardPointerMove = (event) => {
 		if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('low-power')) return;
@@ -102,20 +77,6 @@
 		card.style.removeProperty('--card-glare-x');
 		card.style.removeProperty('--card-glare-y');
 	};
-	/** @param {number} seed */
-	const seededRandom = (seed) => {
-		const value = Math.sin(seed * 12.9898) * 43758.5453;
-		return value - Math.floor(value);
-	};
-	const rainDrops = Array.from({ length: 250 }, (_, index) => ({
-		x: Math.floor(seededRandom(index + 1) * 100),
-		y: Math.floor(seededRandom(index + 101) * 100),
-		opacity: (0.13 + seededRandom(index + 201) * 0.28).toFixed(2),
-		duration: (0.85 + seededRandom(index + 301) * 1.35).toFixed(2),
-		delay: (-seededRandom(index + 401) * 2.2).toFixed(2),
-		scale: (0.38 + seededRandom(index + 501) * 0.62).toFixed(2)
-	}));
-
 	onMount(() => {
 		/** @type {(() => void) | undefined} */
 		let cleanup;
@@ -170,8 +131,8 @@
 		if (ambientBackground) {
 			const sections = gsap.utils.toArray('.chapter');
 			const colors = compactLayout
-				? ['#0a0e0e', '#edf0e8', '#4ca6d8', '#4ca6d8']
-				: ['#0a0e0e', '#edf0e8', '#111817', '#4ca6d8'];
+				? ['#0a0e0e', '#edf0e8', '#111817', '#e8dfd5']
+				: ['#0a0e0e', '#edf0e8', '#111817', '#e8dfd5'];
 			if (compactLayout) {
 				// On phones the next chapter needs to color the viewport before its
 				// content arrives, otherwise the frames enter on the old light field.
@@ -217,28 +178,6 @@
 					backgroundTimeline.to(ambientBackground, { backgroundColor: colors[index], duration: transition, ease: 'none' });
 					cursor = Math.min(1, point() + transition / 2);
 				});
-			}
-		}
-		const aboutRain = document.querySelector('.about-rain');
-		if (aboutRain) {
-			if (lowPowerDevice) {
-				gsap.set(aboutRain, { autoAlpha: 0 });
-			} else {
-			// The rain is strongest while the about section is settled in view,
-			// then dissolves before the next chapter takes over.
-			gsap.set(aboutRain, { autoAlpha: 0 });
-			ScrollTrigger.create({
-				trigger: '.about',
-				start: 'top bottom',
-				end: 'bottom top',
-				scrub: true,
-				invalidateOnRefresh: true,
-				onUpdate: (self) => {
-					const fadeIn = Math.min(1, self.progress / 0.14);
-					const fadeOut = Math.min(1, (1 - self.progress) / 0.18);
-					gsap.set(aboutRain, { autoAlpha: Math.min(fadeIn, fadeOut) });
-				}
-			});
 			}
 		}
 		const slides = gsap.utils.toArray('.hero-slide');
@@ -334,8 +273,8 @@
 						// Start shifting as soon as the pinned section begins, and finish
 						// the color change before the copy starts fading.
 						const colorProgress = Math.min(1, Math.max(0, progress / Math.max(0.001, cachedFadeStart)));
-						const deepBlue = gsap.utils.interpolate('#4ca6d8', '#2d6f98', colorProgress);
-						setKeepColor(deepBlue);
+						const warmAccent = gsap.utils.interpolate('#ff5b1a', '#c74e18', colorProgress);
+						setKeepColor(warmAccent);
 					}
 				}
 			};
@@ -359,21 +298,20 @@
 </script>
 
 <svelte:head>
-	<title>Zac Rains — Photography for rainy days &amp; golden hours</title>
-	<meta name="description" content="Zac Rains is a Wisconsin photographer turning weather, wild places, and honest moments into photographs that feel like rain on glass." />
+	<title>Zac Rains - Photography for the good stuff</title>
+	<meta name="description" content="Zac Rains is a Wisconsin photographer making honest photographs of people, places, details, and the moments worth keeping." />
 </svelte:head>
 
 	<div class="shell">
-		<div class="ambient-background" aria-hidden="true">
-			<span class="storm-rain"></span><span class="storm-flash"></span>
-		</div>
+		<div class="ambient-background" aria-hidden="true"></div>
 	<main>
 		<section class="hero chapter" id="top">
 			<div class="hero-copy-wrap">
 				<div class="hero-identity" aria-label="Zac Rains, photographer">
-					<svg class="hero-mark" viewBox="0 0 60 44" role="img" aria-label="Rain cloud logo mark">
-						<path class="cloud" d="M12,26 C6,26 6,18 12,17 C14,11 22,9 27,12 C31,7 39,7 44,12 C49,11 51,18 48,21 C51,24 48,28 43,28 H14 C10,28 10,26 12,26 Z" />
-						<g class="drops"><line x1="18" y1="29" x2="16" y2="40" class="drop" /><line x1="30" y1="29" x2="28" y2="43" class="drop drop-mid" /><line x1="42" y1="29" x2="40" y2="40" class="drop" /></g>
+					<svg class="hero-mark" viewBox="0 0 60 44" role="img" aria-label="Lens logo mark">
+						<circle class="lens-ring" cx="30" cy="22" r="15" />
+						<circle class="lens-core" cx="30" cy="22" r="6" />
+						<path class="lens-line" d="M30 3v7M30 34v7M11 22h7M42 22h7" />
 					</svg>
 					<h1 class="hero-name">Zac <span>Rains</span></h1>
 					<p class="hero-role">Photographer</p>
@@ -382,36 +320,27 @@
 			<div class="hero-portrait" aria-label="Selected photography slideshow">{#each heroSlides as slide, i}<div class="hero-slide"><img src={asset(slide[0])} alt={slide[1]} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>{/each}</div>
 		</section>
 
-		<div class="rain-break" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 		<section class="about chapter" id="about">
-			<div class="about-rain" aria-hidden="true">
-				{#each rainDrops as drop}
-					<svg class="about-rain__drop" preserveAspectRatio="xMinYMin meet" viewBox="0 0 5 50" style={`--x:${drop.x};--y:${drop.y};--o:${drop.opacity};--a:${drop.duration};--d:${drop.delay};--s:${drop.scale}`}>
-						<path d="M 2.5,0 C 2.6949458,3.5392017 3.344765,20.524571 4.4494577,30.9559 5.7551357,42.666753 4.5915685,50 2.5,50 0.40843152,50 -0.75513565,42.666753 0.55054234,30.9559 1.655235,20.524571 2.3050542,3.5392017 2.5,0 Z" />
-					</svg>
-				{/each}
-			</div>
-			<div class="section-top reveal"><p class="eyebrow"><span>02</span> The person behind the storm</p><span class="section-index">ABOUT / 2026</span></div>
-			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains smiling outdoors" /><span>THE GUY<br />BEHIND THE<br />LENS ↘</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storm chaser, and professional third wheel.</p><p>I chase the kind of images that feel like weather — a little imperfect, always honest, and impossible to fake. From Wisconsin back roads to the wild edges of Kenya, I wait for the split second that makes a story stick.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Wild places</span></div></div></div>
-			<div class="about-marquee" aria-hidden="true"><div class="about-marquee-track"><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span></div><div class="about-marquee-track"><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span><span><b>RAINS</b> / CLOUDS / WIND / LIGHT / WEATHER / </span></div></div>
+			<div class="section-top reveal"><p class="eyebrow"><span>02</span> The person behind the camera</p><span class="section-index">ABOUT / 2026</span></div>
+			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains smiling outdoors" /><span>THE GUY<br />BEHIND THE<br />LENS /</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storyteller, and professional third wheel.</p><p>I make photographs with a sense of place and a little room to breathe. From Wisconsin weddings to the people and details that make a place memorable, I look for the honest frame that brings you back.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Brand stories</span></div></div></div>
+			<div class="about-marquee" aria-hidden="true"><div class="about-marquee-track"><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span></div><div class="about-marquee-track"><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span></div></div>
 		</section>
 
 		<section class="work-reel chapter" id="work">
-			<div class="contact-puddles work-puddles" aria-hidden="true"><span class="puddle puddle-a"><i></i></span><span class="puddle puddle-b"><i></i></span><span class="puddle puddle-c"><i></i></span><span class="puddle puddle-d"><i></i></span></div>
-			<div class="reel-intro"><p class="eyebrow"><span>03</span> Selected work</p><h2>Frames<br /><em>worth<br />keeping.</em></h2><p class="reel-hint">Keep scrolling<br /><span>→</span></p></div>
+			<div class="reel-intro"><p class="eyebrow"><span>03</span> Selected work</p><h2>Frames<br /><em>worth<br />keeping.</em></h2><p class="reel-hint">Keep scrolling<br /><span>-></span></p></div>
 			<div class="reel-track" role="region" aria-label="Selected work photo album">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
 		</section>
 
 		<section class="contact chapter" id="contact">
-			<div class="section-top"><p class="eyebrow"><span>04</span> Before the storm</p><span class="section-index">LET'S CONNECT</span></div>
+			<div class="section-top"><p class="eyebrow"><span>04</span> Make something real</p><span class="section-index">LET'S CONNECT</span></div>
 			<div class="contact-layout"><div><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a></div><button class="business-card" class:flipped={cardFlipped} onpointermove={handleCardPointerMove} onpointerleave={resetCardPointer} onclick={() => (cardFlipped = !cardFlipped)} aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
 				<span class="card-face card-front" style="--card-bg: url({cardBg})">
 					<span class="card-topline"><span>01 / PERSONAL CARD</span><span>EST. 2024</span></span>
 					<span class="card-brand">
-						<svg class="card-mark" viewBox="0 0 60 44" aria-hidden="true"><path class="cloud" d="M12,26 C6,26 6,18 12,17 C14,11 22,9 27,12 C31,7 39,7 44,12 C49,11 51,18 48,21 C51,24 48,28 43,28 H14 C10,28 10,26 12,26 Z" /><g class="drops"><line x1="18" y1="29" x2="16" y2="40" class="drop" /><line x1="30" y1="29" x2="28" y2="43" class="drop drop-mid" /><line x1="42" y1="29" x2="40" y2="40" class="drop" /></g></svg>
+						<svg class="card-mark" viewBox="0 0 60 44" aria-hidden="true"><circle class="lens-ring" cx="30" cy="22" r="15" /><circle class="lens-core" cx="30" cy="22" r="6" /><path class="lens-line" d="M30 3v7M30 34v7M11 22h7M42 22h7" /></svg>
 						<span><b>RAINS</b><small>PHOTOGRAPHY</small></span>
 					</span>
-					<span class="card-bottomline"><span>WISCONSIN / WORLDWIDE</span><i>Flip to connect ↗</i></span>
+					<span class="card-bottomline"><span>WISCONSIN / WORLDWIDE</span><i>Flip to connect -></i></span>
 				</span>
 				<span class="card-face card-back" style="--card-bg: url({cardBg})">
 					<span class="back-content">
@@ -422,7 +351,7 @@
 					</span>
 				</span>
 			</button></div>
-			<div class="contact-footer"><span>© {new Date().getFullYear()} Zac Rains Photography</span><span>Good light, even after the rain.</span><a href="#top">Back to top ↑</a></div>
+			<div class="contact-footer"><span>Copyright {new Date().getFullYear()} Zac Rains Photography</span><span>Good light, honestly seen.</span><a href="#top">Back to top ^</a></div>
 		</section>
 	</main>
 </div>
@@ -919,4 +848,17 @@
 	.reel-photo::after{display:none}
 	.reel-photo img{object-fit:cover;object-position:center}
 	@media(max-width:760px){.hero-portrait{max-height:none}.about-portrait{max-width:none}}
-	</style>
+
+	/* Current direction: warm orange accents, editorial neutrals, and a lens mark
+	   that keeps the name central without turning the identity into a weather pun. */
+	.lens-ring{fill:none;stroke:#f1eee7;stroke-width:2.5}
+	.lens-core{fill:#ff5b1a}
+	.lens-line{fill:none;stroke:#ff5b1a;stroke-width:2.5;stroke-linecap:round}
+	:global(:root){--rain-accent:#ff5b1a;--rain-accent-deep:#a53d13;--rain-accent-faint:rgba(255,91,26,.2)}
+	.contact{background:#e8dfd5;color:#1b1714}
+	.contact h2 em{color:#ff5b1a}
+	.contact .eyebrow,.contact-footer{color:#a53d13}
+	.card-face::after{border-color:rgba(255,91,26,.5)}
+	.card-back::before{background:linear-gradient(125deg,rgba(4,12,14,.9) 0%,rgba(4,12,14,.5) 52%,rgba(255,91,26,.18) 100%),var(--card-bg)}
+	@media(max-width:760px){.contact{background:#e8dfd5}}
+</style>
