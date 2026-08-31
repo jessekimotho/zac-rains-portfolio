@@ -3,7 +3,7 @@
 
 	/** @param {string} filename */
 	const asset = (filename) => `/${filename.split('/').map(encodeURIComponent).join('/')}`;
-	const portrait = asset('newer/optimized/D7B805B9-7968-4B1C-B69A-32EA8EFD1393-Topaz-Gigapixel-4X-2.jpg');
+	const portrait = asset('707453577_17965332306081022_639360383094076295_n.jpg');
 	/** @type {Array<[string, string]>} */
 	let heroSlides = [
 		['newer/optimized/Fuller -051.jpg', 'Winter bride'],
@@ -322,7 +322,7 @@
 
 		<section class="about chapter" id="about">
 			<div class="section-top reveal"><p class="eyebrow"><span>02</span> The person behind the camera</p><span class="section-index">ABOUT / 2026</span></div>
-			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains smiling outdoors" /><span>THE GUY<br />BEHIND THE<br />LENS /</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storyteller, and professional third wheel.</p><p>I make photographs with a sense of place and a little room to breathe. From Wisconsin weddings to the people and details that make a place memorable, I look for the honest frame that brings you back.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Brand stories</span></div></div></div>
+			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains photographing his reflection in a mirror" /><span>THE GUY<br />BEHIND THE<br />LENS /</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storyteller, and professional third wheel.</p><p>I make photographs with a sense of place and a little room to breathe. From Wisconsin weddings to the people and details that make a place memorable, I look for the honest frame that brings you back.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Brand stories</span></div></div></div>
 			<div class="about-marquee" aria-hidden="true"><div class="about-marquee-track"><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span></div><div class="about-marquee-track"><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span></div></div>
 		</section>
 
