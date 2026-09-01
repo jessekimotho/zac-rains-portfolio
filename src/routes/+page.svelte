@@ -45,33 +45,6 @@
 	];
 	let cardFlipped = false;
 	const cardBg = asset('card-background.jpg');
-	let cardDownloadState = 'Download business card';
-
-	const downloadBusinessCard = async () => {
-		if (cardDownloadState === 'Preparing print file…') return;
-		cardDownloadState = 'Preparing print file…';
-		try {
-			const response = await fetch(cardBg);
-			const blob = await response.blob();
-			const imageData = await new Promise((resolve, reject) => {
-				const reader = new FileReader();
-				reader.onload = () => resolve(reader.result);
-				reader.onerror = reject;
-				reader.readAsDataURL(blob);
-			});
-			const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="3.75in" height="4.5in" viewBox="0 0 1125 1350"><rect width="1125" height="1350" fill="#fff"/><image href="${imageData}" x="0" y="0" width="1125" height="675" preserveAspectRatio="xMidYMid slice"/><image href="${imageData}" x="0" y="675" width="1125" height="675" preserveAspectRatio="xMidYMid slice"/><rect width="1125" height="675" fill="#071316" fill-opacity=".72"/><rect y="675" width="1125" height="675" fill="#071316" fill-opacity=".78"/><g fill="none" stroke="#ff5b1a"><rect x="37.5" y="37.5" width="1050" height="600"/><rect x="37.5" y="712.5" width="1050" height="600"/></g><g fill="#f1eee7" font-family="monospace"><text x="100" y="115" font-size="24" letter-spacing="4">01 / PERSONAL CARD</text><text x="1025" y="115" text-anchor="end" fill="#ff5b1a" font-size="24" letter-spacing="4">EST. 2024</text><text x="300" y="385" font-family="Arial,sans-serif" font-size="170" font-weight="700" letter-spacing="-12">RAINS</text><text x="305" y="457" fill="#ff5b1a" font-size="24" letter-spacing="10">PHOTOGRAPHY</text><text x="100" y="585" font-size="24" letter-spacing="4">WISCONSIN / WORLDWIDE</text><text x="200" y="930" fill="#ff5b1a" font-size="22" letter-spacing="5">CALL</text><text x="200" y="1000" font-size="44">262—232—9332</text><text x="700" y="885" fill="#ff5b1a" font-size="22" letter-spacing="5">MAIL</text><text x="700" y="955" font-size="34">astrozac</text><text x="700" y="1005" font-size="34">@outlook.com</text></g><g fill="#555" font-family="monospace" font-size="14" letter-spacing="2"><text x="37.5" y="670">FRONT / 3.5 × 2 IN TRIM + 0.125 IN BLEED</text><text x="37.5" y="1345">BACK / 3.5 × 2 IN TRIM + 0.125 IN BLEED</text></g></svg>`;
-			const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-			const link = document.createElement('a');
-			link.href = url;
-			link.download = 'zac-rains-business-card-print.svg';
-			link.click();
-			URL.revokeObjectURL(url);
-			cardDownloadState = 'Download business card';
-		} catch (error) {
-			console.error('Could not prepare the business card file', error);
-			cardDownloadState = 'Try download again';
-		}
-	};
 	/** @param {PointerEvent} event */
 	const handleCardPointerMove = (event) => {
 		if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('low-power')) return;
@@ -377,7 +350,7 @@
 						</span>
 					</span>
 				</span>
-			</button><button class="download-card" onclick={downloadBusinessCard}><span>↓</span>{cardDownloadState}<small>Print-ready SVG · front + back · bleed included</small></button></div>
+			</button><a class="download-card" href="/zac-rains-business-card-print.pdf" download><span>&#8595;</span>Download business card PDF<small>Print-ready &middot; front + back &middot; bleed included</small></a></div>
 			<div class="contact-footer"><span>Copyright {new Date().getFullYear()} Zac Rains Photography</span><span>Good light, honestly seen.</span><a href="#top">Back to top ^</a></div>
 		</section>
 	</main>
