@@ -45,6 +45,33 @@
 	];
 	let cardFlipped = false;
 	const cardBg = asset('card-background.jpg');
+	let cardDownloadState = 'Download business card';
+
+	const downloadBusinessCard = async () => {
+		if (cardDownloadState === 'Preparing print file…') return;
+		cardDownloadState = 'Preparing print file…';
+		try {
+			const response = await fetch(cardBg);
+			const blob = await response.blob();
+			const imageData = await new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.onload = () => resolve(reader.result);
+				reader.onerror = reject;
+				reader.readAsDataURL(blob);
+			});
+			const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="3.75in" height="4.5in" viewBox="0 0 1125 1350"><rect width="1125" height="1350" fill="#fff"/><image href="${imageData}" x="0" y="0" width="1125" height="675" preserveAspectRatio="xMidYMid slice"/><image href="${imageData}" x="0" y="675" width="1125" height="675" preserveAspectRatio="xMidYMid slice"/><rect width="1125" height="675" fill="#071316" fill-opacity=".72"/><rect y="675" width="1125" height="675" fill="#071316" fill-opacity=".78"/><g fill="none" stroke="#ff5b1a"><rect x="37.5" y="37.5" width="1050" height="600"/><rect x="37.5" y="712.5" width="1050" height="600"/></g><g fill="#f1eee7" font-family="monospace"><text x="100" y="115" font-size="24" letter-spacing="4">01 / PERSONAL CARD</text><text x="1025" y="115" text-anchor="end" fill="#ff5b1a" font-size="24" letter-spacing="4">EST. 2024</text><text x="300" y="385" font-family="Arial,sans-serif" font-size="170" font-weight="700" letter-spacing="-12">RAINS</text><text x="305" y="457" fill="#ff5b1a" font-size="24" letter-spacing="10">PHOTOGRAPHY</text><text x="100" y="585" font-size="24" letter-spacing="4">WISCONSIN / WORLDWIDE</text><text x="200" y="930" fill="#ff5b1a" font-size="22" letter-spacing="5">CALL</text><text x="200" y="1000" font-size="44">262—232—9332</text><text x="700" y="885" fill="#ff5b1a" font-size="22" letter-spacing="5">MAIL</text><text x="700" y="955" font-size="34">astrozac</text><text x="700" y="1005" font-size="34">@outlook.com</text></g><g fill="#555" font-family="monospace" font-size="14" letter-spacing="2"><text x="37.5" y="670">FRONT / 3.5 × 2 IN TRIM + 0.125 IN BLEED</text><text x="37.5" y="1345">BACK / 3.5 × 2 IN TRIM + 0.125 IN BLEED</text></g></svg>`;
+			const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+			const link = document.createElement('a');
+			link.href = url;
+			link.download = 'zac-rains-business-card-print.svg';
+			link.click();
+			URL.revokeObjectURL(url);
+			cardDownloadState = 'Download business card';
+		} catch (error) {
+			console.error('Could not prepare the business card file', error);
+			cardDownloadState = 'Try download again';
+		}
+	};
 	/** @param {PointerEvent} event */
 	const handleCardPointerMove = (event) => {
 		if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('low-power')) return;
@@ -350,7 +377,7 @@
 						</span>
 					</span>
 				</span>
-			</button></div>
+			</button><button class="download-card" onclick={downloadBusinessCard}><span>↓</span>{cardDownloadState}<small>Print-ready SVG · front + back · bleed included</small></button></div>
 			<div class="contact-footer"><span>Copyright {new Date().getFullYear()} Zac Rains Photography</span><span>Good light, honestly seen.</span><a href="#top">Back to top ^</a></div>
 		</section>
 	</main>
@@ -861,4 +888,12 @@
 	.card-face::after{border-color:rgba(255,91,26,.5)}
 	.card-back::before{background:linear-gradient(125deg,rgba(4,12,14,.9) 0%,rgba(4,12,14,.5) 52%,rgba(255,91,26,.18) 100%),var(--card-bg)}
 	@media(max-width:760px){.contact{background:#e8dfd5}}
+
+	/* Keep the contact footer in normal flow so it cannot sit on top of the card. */
+	.contact-footer{position:static;margin-top:clamp(64px,8vh,110px);padding-bottom:4px;min-height:24px;align-items:center;gap:18px}
+	.download-card{grid-column:2;justify-self:start;display:flex;align-items:center;gap:11px;margin-top:-clamp(55px,6vh,82px);padding:12px 0;border:0;border-bottom:1px solid rgba(27,23,20,.55);background:none;color:#a53d13;cursor:pointer;font:11px 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;text-align:left}
+	.download-card span{font-size:20px;line-height:0;color:#ff5b1a}
+	.download-card small{display:block;margin-left:8px;color:#786f68;font:9px 'DM Mono',monospace;letter-spacing:.05em;text-transform:none}
+	.download-card:hover{color:#1b1714}
+	@media(max-width:760px){.download-card{grid-column:auto;margin:20px 0 0;padding:11px 0;flex-wrap:wrap}.download-card small{flex-basis:100%;margin-left:31px}.contact-footer{margin-top:clamp(64px,10vh,92px)}}
 </style>
