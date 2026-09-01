@@ -27,7 +27,7 @@
 		if (!gsap) return;
 		window.clearTimeout(ambientTimer);
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-		const wait = firstRun ? gsap.utils.random(1800, 3200) : gsap.utils.random(4200, 7600);
+		const wait = firstRun ? gsap.utils.random(8000, 14000) : gsap.utils.random(20000, 32000);
 		ambientTimer = window.setTimeout(() => {
 			if (document.visibilityState === 'visible' && !performing) playTrick(true);
 			else scheduleAmbientTrick();
@@ -193,13 +193,19 @@
 			const nearestY = Math.max(bounds.top, Math.min(event.clientY, bounds.bottom));
 			const distance = Math.hypot(event.clientX - nearestX, event.clientY - nearestY);
 			const proximity = Math.max(0, 1 - distance / 300);
-			logoHitArea.style.setProperty('--proximity-scale', String(1 + proximity * 0.42));
+			const centerX = (bounds.left + bounds.right) / 2;
+			const centerY = (bounds.top + bounds.bottom) / 2;
+			const lookX = Math.max(-1, Math.min(1, (event.clientX - centerX) / (bounds.width / 2))) * proximity * 1.35;
+			const lookY = Math.max(-1, Math.min(1, (event.clientY - centerY) / (bounds.height / 2))) * proximity * 1.35;
+			logoHitArea.style.setProperty('--proximity-scale', String(1 + proximity * 0.14));
 			logoHitArea.style.setProperty('--proximity-glow', `${proximity * 14}px`);
 			logoHitArea.style.setProperty('--proximity-alpha', String(0.08 + proximity * 0.34));
+			logoHitArea.style.setProperty('--eye-look-x', `${lookX}px`);
+			logoHitArea.style.setProperty('--eye-look-y', `${lookY}px`);
 		};
 		const handlePointerEnter = () => {
 			hovering = true;
-			logoHitArea.style.setProperty('--proximity-scale', '1.42');
+			logoHitArea.style.setProperty('--proximity-scale', '1.14');
 			logoHitArea.style.setProperty('--proximity-glow', '14px');
 			logoHitArea.style.setProperty('--proximity-alpha', '.42');
 		};
@@ -208,6 +214,8 @@
 			logoHitArea.style.setProperty('--proximity-scale', '1');
 			logoHitArea.style.setProperty('--proximity-glow', '0px');
 			logoHitArea.style.setProperty('--proximity-alpha', '0');
+			logoHitArea.style.setProperty('--eye-look-x', '0px');
+			logoHitArea.style.setProperty('--eye-look-y', '0px');
 		};
 		/** @param {MouseEvent} event */
 		const handlePointerLeaveWindow = (event) => {
@@ -215,6 +223,8 @@
 				logoHitArea.style.setProperty('--proximity-scale', '1');
 				logoHitArea.style.setProperty('--proximity-glow', '0px');
 				logoHitArea.style.setProperty('--proximity-alpha', '0');
+				logoHitArea.style.setProperty('--eye-look-x', '0px');
+				logoHitArea.style.setProperty('--eye-look-y', '0px');
 			}
 		};
 		const handleVisibility = () => {
@@ -263,6 +273,7 @@
 {#snippet logoMark()}
 	<svg bind:this={logo} class:is-performing={performing} class:rest-float={restMode === 1} class:rest-sway={restMode === 2} class:rest-hover={restMode === 3} class:rest-drift={restMode === 4} class:rest-glow={restMode === 5} viewBox="0 0 60 44" role="img" aria-hidden="true">
 		<circle class="lens-ring" cx="30" cy="22" r="15" />
+		<g class="lens-eye">
 		<circle class="lens-glass" cx="30" cy="22" r="11" />
 		<g class="lens-aperture">
 			<path d="M30 12a10 10 0 0 1 8.66 5l-6.85 3.96z" />
@@ -273,6 +284,7 @@
 			<path d="M30 12a10 10 0 0 1 8.66 5l-6.85 3.96z" transform="rotate(300 30 22)" />
 		</g>
 		<path class="lens-glint" d="M22.5 18.2a9 9 0 0 1 4.4-4" />
+		</g>
 		<circle class="lens-flash" cx="30" cy="22" r="11" />
 	</svg>
 	<span class="sr-status" aria-live="polite">{trickName}</span>
@@ -289,12 +301,13 @@
 {/if}
 
 <style>
-	.lens-logo{display:block;width:100%;aspect-ratio:60/44;margin:0;padding:0;border:0;background:none;color:inherit;cursor:pointer;overflow:visible;position:relative;line-height:0;touch-action:manipulation}
+	.lens-logo{display:block;width:100%;aspect-ratio:60/44;margin:0;padding:0;border:0;background:none;color:inherit;cursor:pointer;overflow:visible;position:relative;line-height:0;touch-action:manipulation;transform:scale(var(--proximity-scale,1));transform-origin:center;transition:transform .45s cubic-bezier(.22,.75,.25,1);will-change:transform}
 	.lens-logo:focus-visible{outline:2px solid #ff5b1a;outline-offset:5px;border-radius:50%}
 	.lens-logo svg{display:block;width:100%;height:100%;overflow:visible;transition:filter .25s ease}
+	.lens-eye{transform-box:fill-box;transform-origin:center;transform:translate(var(--eye-look-x,0px),var(--eye-look-y,0px));transition:transform .5s cubic-bezier(.22,.75,.25,1)}
 	.lens-logo:hover svg,.lens-logo.is-hovering svg{filter:none}
 	.lens-ring,.lens-aperture,.lens-glint,.lens-flash{transform-box:fill-box;transform-origin:center}
-	.lens-ring,.lens-aperture,.lens-glint{animation-duration:5.8s;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-delay:var(--logo-delay)}
+	.lens-ring,.lens-aperture,.lens-glint{animation-duration:8.5s;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-delay:var(--logo-delay)}
 	.lens-ring{fill:none;stroke:#f1eee7;stroke-width:2.5;animation-name:lens-breathe-ring}
 	.lens-glass{fill:rgba(255,91,26,.1);stroke:rgba(255,91,26,.65);stroke-width:1}
 	.lens-aperture{fill:#ff5b1a;animation-name:lens-breathe-aperture}
@@ -310,14 +323,14 @@
 	   normal rest animation resume when the timeline completes. */
 	.is-performing,.is-performing .lens-ring,.is-performing .lens-aperture,.is-performing .lens-glint{animation:none!important}
 	.sr-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-	@keyframes lens-breathe-ring{0%,100%{opacity:.88;transform:scale(1)}50%{opacity:1;transform:scale(1.022)}}
-	@keyframes lens-breathe-aperture{0%,100%{transform:rotate(-1.5deg) scale(.97)}50%{transform:rotate(2.5deg) scale(1.025)}}
-	@keyframes lens-breathe-glint{0%,100%{opacity:.44;transform:translate(-.5px,.4px)}50%{opacity:.76;transform:translate(.7px,-.5px)}}
-	@keyframes logo-rest-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.2px)}}
-	@keyframes logo-rest-sway{0%,100%{transform:rotate(-.45deg)}50%{transform:rotate(.65deg)}}
-	@keyframes logo-rest-hover{0%,100%{transform:scale(.995)}50%{transform:scale(1.018)}}
-	@keyframes logo-rest-drift{0%,100%{transform:translate(-.5px,.3px)}50%{transform:translate(.7px,-.4px)}}
-	@keyframes logo-rest-glow{0%,100%{filter:drop-shadow(0 0 0 rgba(255,91,26,0))}50%{filter:drop-shadow(0 0 3px rgba(255,91,26,.22))}}
+	@keyframes lens-breathe-ring{0%,100%{opacity:.92;transform:scale(1)}50%{opacity:1;transform:scale(1.01)}}
+	@keyframes lens-breathe-aperture{0%,100%{transform:rotate(-.5deg) scale(.99)}50%{transform:rotate(.8deg) scale(1.01)}}
+	@keyframes lens-breathe-glint{0%,100%{opacity:.5;transform:translate(-.2px,.15px)}50%{opacity:.62;transform:translate(.25px,-.2px)}}
+	@keyframes logo-rest-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-.5px)}}
+	@keyframes logo-rest-sway{0%,100%{transform:rotate(-.2deg)}50%{transform:rotate(.3deg)}}
+	@keyframes logo-rest-hover{0%,100%{transform:scale(.998)}50%{transform:scale(1.008)}}
+	@keyframes logo-rest-drift{0%,100%{transform:translate(-.2px,.12px)}50%{transform:translate(.25px,-.2px)}}
+	@keyframes logo-rest-glow{0%,100%{filter:drop-shadow(0 0 0 rgba(255,91,26,0))}50%{filter:drop-shadow(0 0 1px rgba(255,91,26,.1))}}
 	@media(prefers-reduced-motion:reduce){.lens-ring,.lens-aperture,.lens-glint,.lens-flash,.rest-float,.rest-sway,.rest-hover,.rest-drift,.rest-glow{animation:none;transform:none}.lens-flash{opacity:0}.lens-logo:hover svg{filter:none}}
 	@media print{.lens-logo svg,.lens-ring,.lens-aperture,.lens-glint,.lens-flash{animation:none!important}.lens-logo{cursor:default}.lens-logo:focus-visible{outline:0}}
 </style>

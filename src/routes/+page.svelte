@@ -13,17 +13,54 @@
 	const portrait = asset('707453577_17965332306081022_639360383094076295_n.jpg');
 	/** @type {Array<[string, string]>} */
 	let heroSlides = [
-		['newer/optimized/Fuller -051.jpg', 'Winter bride'],
-		['newer/optimized/Fuller -024.jpg', 'The groomsmen'],
-		['newer/optimized/DSC_9880.jpg', 'At the coffee bar'],
-		['newer/optimized/DSC_9986-2.jpg', 'Hands at work'],
-		['newer/optimized/DSC_0246.jpg', 'A room with a story'],
-		['newer/optimized/DSC_0232.jpg', 'Jewelry in focus'],
-		['newer/optimized/Fuller -116.jpg', 'The bridal party'],
-		['newer/optimized/DSC_0132.jpg', 'The pour'],
-		['newer/optimized/Fuller -001.jpg', 'Wedding details'],
-		['newer/optimized/D7B805B9-7968-4B1C-B69A-32EA8EFD1393-Topaz-Gigapixel-4X-2.jpg', 'Zac Rains']
+		// Keep the hero selection separate from the lower Selected Work reel so
+		// the homepage opens with a wider range of photographs.
+		['newer/optimized/Fuller -115.jpg', 'A quiet beginning'],
+		['newer/optimized/Fuller -113.jpg', 'Between ceremonies'],
+		['newer/optimized/Fuller -053.jpg', 'A winter portrait'],
+		['newer/optimized/Fuller -050.jpg', 'The first look'],
+		['newer/optimized/Fuller -038.jpg', 'After the vows'],
+		['newer/optimized/DSC_9985.jpg', 'Light on the table'],
+		['newer/optimized/DSC_9921.jpg', 'A considered detail'],
+		['newer/optimized/DSC_0237-2.jpg', 'Made by hand'],
+		['newer/optimized/DSC_0228.jpg', 'Objects with history'],
+		['newer/optimized/DSC_0306.jpg', 'An open window'],
+		['newer/optimized/DSC_0344.jpg', 'The long table'],
+		['newer/optimized/DSC_0139.jpg', 'A slow morning'],
+		['newer/optimized/DSC_0103.jpg', 'In good company'],
+		['newer/optimized/DSC_0124.jpg', 'Small moments'],
+		['newer/optimized/DSC09388.jpg', 'A day worth keeping'],
+		['newer/optimized/DSC01518.jpg', 'Zac Rains']
 	];
+	let activeHeroSlide = 0;
+	/** @type {HTMLElement[]} */
+	let heroSlideElements = [];
+	/** @type {any} */
+	let heroGsap;
+	/** @type {any} */
+	let heroSlideshow;
+
+	/** @param {number} direction */
+	const goToHeroSlide = (direction) => {
+		if (!heroSlideElements.length) return;
+		const nextSlide = (activeHeroSlide + direction + heroSlideElements.length) % heroSlideElements.length;
+		if (heroGsap) {
+			heroGsap.timeline()
+				.to(heroSlideElements[activeHeroSlide], { autoAlpha: 0, duration: 0.8, ease: 'power2.inOut' })
+				.to(heroSlideElements[nextSlide], { autoAlpha: 1, duration: 0.8, ease: 'power2.inOut' }, '<');
+		} else {
+			heroSlideElements[activeHeroSlide].style.opacity = '0';
+			heroSlideElements[nextSlide].style.opacity = '1';
+		}
+		activeHeroSlide = nextSlide;
+		heroSlideshow?.restart(true);
+	};
+	/** @param {MouseEvent} event */
+	const handleHeroImageClick = (event) => {
+		const target = /** @type {HTMLElement} */ (event.currentTarget);
+		const bounds = target.getBoundingClientRect();
+		goToHeroSlide(event.clientX - bounds.left < bounds.width / 2 ? -1 : 1);
+	};
 	/** @param {Array<[string, string]>} slides @returns {Array<[string, string]>} */
 	const shuffleSlides = (slides) => {
 		const shuffled = [...slides];
@@ -153,15 +190,11 @@
 			});
 		}
 		const ambientBackground = document.querySelector('.ambient-background');
-		const slides = gsap.utils.toArray('.hero-slide');
-		let activeSlide = 0;
-		gsap.set(slides.slice(1), { autoAlpha: 0 });
-		const slideshow = gsap.delayedCall(4, function advanceSlide() {
-			const nextSlide = (activeSlide + 1) % slides.length;
-			gsap.timeline().to(slides[activeSlide], { autoAlpha: 0, duration: 1.1, ease: 'power2.inOut' }).to(slides[nextSlide], { autoAlpha: 1, duration: 1.1, ease: 'power2.inOut' }, '<');
-			activeSlide = nextSlide;
-			slideshow.restart(true);
-		});
+		heroGsap = gsap;
+		heroSlideElements = gsap.utils.toArray('.hero-slide');
+		activeHeroSlide = 0;
+		gsap.set(heroSlideElements.slice(1), { autoAlpha: 0 });
+		heroSlideshow = gsap.delayedCall(4, () => goToHeroSlide(1));
 		gsap.utils.toArray('.reveal').forEach((element) => {
 			gsap.from(element, { y: 65, opacity: 0, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: element, start: 'top 82%' } });
 		});
@@ -318,7 +351,8 @@
 			backgroundTrigger.update();
 		}
 			cleanup = () => {
-				slideshow.kill();
+				heroSlideshow?.kill();
+				heroGsap = undefined;
 				ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 			};
 		});
@@ -395,7 +429,14 @@
 					<p class="hero-role">Photographer</p>
 				</div>
 			</div>
-			<div class="hero-portrait" aria-label="Selected photography slideshow">{#each heroSlides as slide, i}<div class="hero-slide"><img src={asset(slide[0])} alt={slide[1]} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>{/each}</div>
+			<div class="hero-portrait" aria-label="Selected photography slideshow. Click the left or right side to browse images." role="button" tabindex="0" onclick={handleHeroImageClick} onkeydown={(event) => {
+				if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+					event.preventDefault();
+					goToHeroSlide(event.key === 'ArrowLeft' ? -1 : 1);
+				}
+			}}>
+				{#each heroSlides as slide, i}<div class="hero-slide" bind:this={heroSlideElements[i]}><img src={asset(slide[0])} alt={slide[1]} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>{/each}
+			</div>
 		</section>
 
 		<section class="about chapter" id="about" aria-label="About Zac Rains">
@@ -502,7 +543,7 @@
 	.hero-mark .drop:nth-child(3){animation-delay:.45s}
 	.hero-name{margin:0;font-size:clamp(5rem,10vw,11rem);font-weight:600;letter-spacing:-.1em;line-height:.78;text-transform:uppercase}
 	.hero-name span{color:#ff5b1a}
-	.hero-role{grid-column:2;margin:8px 0 0;padding:0 0 0 clamp(8px,.7vw,12px);color:#ff5b1a;font:12px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase}
+	.hero-role{grid-column:2;margin:8px 0 0;padding:0 0 0 clamp(8px,.7vw,12px);color:#ff8a5c;font:600 clamp(1.05rem,1.8vw,1.45rem) 'DM Mono',monospace;letter-spacing:.3em;text-transform:uppercase}
 	.hero-portrait{position:relative;top:auto;right:auto;width:100%;height:min(72vh,760px);min-height:520px;align-self:center;clip-path:none;transform:none;border-radius:2px}
 	.hero-portrait:after{background:linear-gradient(180deg,transparent 65%,rgba(5,9,9,.25))}
 	.hero-slide img{height:108%;object-position:center;filter:saturate(.9) contrast(1.02)}
@@ -512,7 +553,7 @@
 		.hero-identity{column-gap:14px}
 		.hero-mark{width:68px}
 		.hero-name{font-size:clamp(3.8rem,16vw,6rem)}
-		.hero-role{font-size:10px;margin-top:22px}
+		.hero-role{font-size:clamp(.85rem,3.8vw,1.1rem);margin-top:22px}
 		.hero-portrait{height:70vh;min-height:430px}
 	}
 	.reel-intro{will-change:opacity}
@@ -744,7 +785,7 @@
 		.hero-identity{column-gap:clamp(12px,1.8vw,24px)}
 		.hero-mark{width:clamp(76px,9vw,112px)}
 		.hero-name{font-size:clamp(4.35rem,9vw,7.3rem)}
-		.hero-role{font-size:11px}
+		.hero-role{font-size:clamp(.95rem,1.8vw,1.25rem)}
 		.hero-portrait{height:min(74vh,680px);min-height:440px}
 
 		.about{padding:clamp(88px,11vh,128px) clamp(28px,7vw,72px) 48px;min-height:auto}
@@ -779,7 +820,7 @@
 		.hero-identity{column-gap:10px}
 		.hero-mark{width:clamp(58px,16vw,70px)}
 		.hero-name{font-size:clamp(3.35rem,15.5vw,5.8rem);line-height:.8}
-		.hero-role{font-size:9px;letter-spacing:.12em;margin-top:16px;padding-left:4px}
+		.hero-role{font-size:clamp(.8rem,3.8vw,1.05rem);letter-spacing:.22em;margin-top:16px;padding-left:4px}
 		.hero-portrait{height:clamp(360px,68vh,580px);min-height:0;width:100%}
 
 		.about{padding:clamp(72px,10vh,96px) clamp(18px,7vw,28px) 0;min-height:auto}
@@ -1011,5 +1052,7 @@
 	@media(prefers-reduced-motion:reduce){.business-card::after{animation:none}}
 	.card-flip-hint{display:none}
 	.card-brand small{color:#ff8a5c;font-size:clamp(11px,1.5vw,17px);font-weight:600;letter-spacing:.3em}
+	.hero-role{color:#ff8a5c}
+	.hero-portrait{z-index:3}
 	@media(max-width:760px){.card-flip-hint{margin-top:12px}.card-brand small{font-size:10px}}
 </style>
