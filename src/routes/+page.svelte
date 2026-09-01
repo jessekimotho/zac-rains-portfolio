@@ -1,5 +1,12 @@
 <script>
 	import { onMount } from 'svelte';
+	import LensLogo from '$lib/LensLogo.svelte';
+
+	const siteUrl = 'https://rainsphotography.com';
+	const pageUrl = `${siteUrl}/`;
+	const shareImage = `${siteUrl}/775127040_1032669189502473_4919640403744633589_n.jpg`;
+	const pageTitle = 'Zac Rains Photography — Honest photographs for the good stuff';
+	const pageDescription = 'Zac Rains is a Wisconsin photographer making honest photographs of people, places, details, weddings, families, and the moments worth keeping.';
 
 	/** @param {string} filename */
 	const asset = (filename) => `/${filename.split('/').map(encodeURIComponent).join('/')}`;
@@ -126,60 +133,6 @@
 			});
 		}
 		const ambientBackground = document.querySelector('.ambient-background');
-		/** @type {(() => void) | undefined} */
-		let stopMobileBackground;
-		if (ambientBackground) {
-			const sections = gsap.utils.toArray('.chapter');
-			const colors = compactLayout
-				? ['#0a0e0e', '#edf0e8', '#111817', '#e8dfd5']
-				: ['#0a0e0e', '#edf0e8', '#111817', '#e8dfd5'];
-			if (compactLayout) {
-				// On phones the next chapter needs to color the viewport before its
-				// content arrives, otherwise the frames enter on the old light field.
-				const updateMobileBackground = () => {
-					const probe = window.scrollY + window.innerHeight * 0.22;
-					const lead = Math.min(window.innerHeight * 0.36, 240);
-					let color = colors[0];
-					for (let index = 1; index < sections.length; index += 1) {
-						const top = sections[index].getBoundingClientRect().top + window.scrollY;
-						const start = top - lead;
-						const end = top + lead * 0.28;
-						if (probe <= start) break;
-						if (probe < end) {
-							color = gsap.utils.interpolate(colors[index - 1], colors[index], (probe - start) / (end - start));
-							break;
-						}
-						color = colors[index];
-					}
-					gsap.set(ambientBackground, { backgroundColor: color });
-				};
-				updateMobileBackground();
-				window.addEventListener('scroll', updateMobileBackground, { passive: true });
-				window.addEventListener('resize', updateMobileBackground);
-				stopMobileBackground = () => {
-					window.removeEventListener('scroll', updateMobileBackground);
-					window.removeEventListener('resize', updateMobileBackground);
-				};
-			} else {
-				const transition = 0.08;
-				const maxScroll = () => Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-				const backgroundTimeline = gsap.timeline({
-					scrollTrigger: { trigger: '.shell', start: 'top top', end: 'bottom bottom', scrub: 1, invalidateOnRefresh: true }
-				});
-				let cursor = 0;
-				sections.forEach((section, index) => {
-					if (index === 0) {
-						gsap.set(ambientBackground, { backgroundColor: colors[0] });
-						return;
-					}
-					const point = () => section.offsetTop / maxScroll();
-					const start = () => Math.max(cursor, point() - transition / 2);
-					backgroundTimeline.to({}, { duration: () => Math.max(0, start() - cursor) });
-					backgroundTimeline.to(ambientBackground, { backgroundColor: colors[index], duration: transition, ease: 'none' });
-					cursor = Math.min(1, point() + transition / 2);
-				});
-			}
-		}
 		const slides = gsap.utils.toArray('.hero-slide');
 		let activeSlide = 0;
 		gsap.set(slides.slice(1), { autoAlpha: 0 });
@@ -202,6 +155,8 @@
 		const rippleField = document.querySelector('.work-puddles');
 		/** @type {HTMLElement | null} */
 		const firstReelCard = document.querySelector('.reel-card');
+		/** @type {import('gsap/ScrollTrigger').ScrollTrigger | null} */
+		let workScrollTrigger = null;
 		if (reelTrack && reelIntro && firstReelCard && !compactLayout) {
 			if (rippleField) gsap.set(rippleField, { opacity: 0 });
 			// Stop with a large, intentional landing gap after the final frame.
@@ -212,9 +167,9 @@
 				: Math.min(760, Math.max(360, window.innerWidth * 0.42));
 			const trackStart = () => Math.max(0, reelTrack.offsetLeft);
 			const distance = () => Math.max(0, trackStart() + reelTrack.scrollWidth - window.innerWidth + trailingGap());
-			// Hold the intro in place long enough to read and use it before the
-			// first frame starts travelling across the section.
-			const introPause = () => window.innerHeight * 2.1;
+			// Give the title only a brief settling beat before the reel responds.
+			// A long hold here makes normal wheel/trackpad input feel stuck.
+			const introPause = () => window.innerHeight * 0.18;
 			const scrollEnd = () => `+=${distance() + introPause()}`;
 			const fadeBounds = () => {
 				const totalDistance = distance();
@@ -252,7 +207,7 @@
 				end: scrollEnd,
 				pin: true,
 				anticipatePin: 1,
-				scrub: 1,
+				scrub: 0.35,
 				invalidateOnRefresh: true,
 				onRefresh: refreshFadeBounds,
 				/** @param {{ progress: number }} self */
@@ -280,12 +235,70 @@
 			};
 			refreshFadeBounds();
 			const reelTimeline = gsap.timeline({ scrollTrigger: reelScrollTrigger });
+			workScrollTrigger = reelTimeline.scrollTrigger ?? null;
 			reelTimeline.to({}, { duration: () => introPause() / Math.max(1, distance()) })
 				.to(reelTrack, { x: () => -distance(), duration: 1, ease: 'none', force3D: true });
 		}
+		if (ambientBackground) {
+			const setBackground = gsap.quickSetter(ambientBackground, 'backgroundColor');
+			const hero = document.querySelector('.hero');
+			const about = document.querySelector('.about');
+			const work = document.querySelector('.work-reel');
+			const contact = document.querySelector('.contact');
+			/** @param {string} from @param {string} to @param {number} amount */
+			const colorAt = (from, to, amount) => gsap.utils.interpolate(from, to, Math.min(1, Math.max(0, amount)));
+			/** @param {Element | null} element */
+			const documentTop = (element) => element ? element.getBoundingClientRect().top + window.scrollY : 0;
+			const backgroundTrigger = ScrollTrigger.create({
+				trigger: '.shell',
+				start: 'top top',
+				end: 'bottom bottom',
+				invalidateOnRefresh: true,
+				onUpdate: () => {
+					const scrollY = window.scrollY;
+					const aboutTop = about ? documentTop(about) : 0;
+					const workTop = work ? documentTop(work) : aboutTop;
+					const workStart = workScrollTrigger?.start ?? workTop;
+					const workEnd = workScrollTrigger?.end ?? workTop;
+					const transitionDistance = Math.max(180, window.innerHeight * 0.42);
+					const heroTransitionStart = Math.max(0, aboutTop - Math.max(180, window.innerHeight * 0.34));
+					let color = '#0a0e0e';
+
+					if (compactLayout) {
+						const probe = scrollY + window.innerHeight * 0.22;
+						const lead = Math.min(window.innerHeight * 0.36, 240);
+						const points = [hero, about, work, contact].filter(Boolean);
+						const colors = ['#0a0e0e', '#edf0e8', '#0a0e0e', '#e8dfd5'];
+						color = colors[0];
+						for (let index = 1; index < points.length; index += 1) {
+							const top = documentTop(points[index]);
+							const start = top - lead;
+							const end = top + lead * 0.28;
+							if (probe <= start) break;
+							color = probe < end ? colorAt(colors[index - 1], colors[index], (probe - start) / (end - start)) : colors[index];
+						}
+					} else if (scrollY < heroTransitionStart) {
+						color = '#0a0e0e';
+					} else if (scrollY < aboutTop) {
+						color = colorAt('#0a0e0e', '#edf0e8', (scrollY - heroTransitionStart) / (aboutTop - heroTransitionStart));
+					} else if (scrollY < workTop - transitionDistance) {
+						color = '#edf0e8';
+					} else if (scrollY < workStart) {
+						color = colorAt('#edf0e8', '#0a0e0e', (scrollY - (workTop - transitionDistance)) / transitionDistance);
+					} else if (scrollY < workEnd) {
+						const reelProgress = (scrollY - workStart) / Math.max(1, workEnd - workStart);
+						color = colorAt('#0a0e0e', '#e8dfd5', (reelProgress - 0.72) / 0.26);
+					} else {
+						color = '#e8dfd5';
+					}
+					setBackground(color);
+				}
+			});
+			backgroundTrigger.refresh();
+			backgroundTrigger.update();
+		}
 			cleanup = () => {
 				slideshow.kill();
-				stopMobileBackground?.();
 				ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 			};
 		});
@@ -298,46 +311,91 @@
 </script>
 
 <svelte:head>
-	<title>Zac Rains - Photography for the good stuff</title>
-	<meta name="description" content="Zac Rains is a Wisconsin photographer making honest photographs of people, places, details, and the moments worth keeping." />
+	<title>{pageTitle}</title>
+	<meta name="description" content={pageDescription} />
+	<meta name="author" content="Zac Rains" />
+	<meta name="keywords" content="Wisconsin photographer, wedding photographer, portrait photographer, family photographer, brand photographer, documentary photography, Zac Rains" />
+	<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+	<meta name="googlebot" content="index, follow" />
+	<meta name="referrer" content="strict-origin-when-cross-origin" />
+	<link rel="canonical" href={pageUrl} />
+	<link rel="manifest" href="/site.webmanifest" />
+	<link rel="alternate" hreflang="en" href={pageUrl} />
+
+	<!-- Open Graph: used by Facebook, LinkedIn, Slack, iMessage, and other link previews. -->
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Zac Rains Photography" />
+	<meta property="og:title" content={pageTitle} />
+	<meta property="og:description" content={pageDescription} />
+	<meta property="og:url" content={pageUrl} />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:image" content={shareImage} />
+	<meta property="og:image:secure_url" content={shareImage} />
+	<meta property="og:image:type" content="image/jpeg" />
+	<meta property="og:image:width" content="1170" />
+	<meta property="og:image:height" content="669" />
+	<meta property="og:image:alt" content="Zac Rains Photography business card" />
+
+	<!-- X/Twitter card metadata. -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={pageTitle} />
+	<meta name="twitter:description" content={pageDescription} />
+	<meta name="twitter:image" content={shareImage} />
+	<meta name="twitter:image:alt" content="Zac Rains Photography business card" />
+
+	<!-- Schema.org helps search engines understand the person and local service. -->
+	<script type="application/ld+json">
+		{JSON.stringify({
+			'@context': 'https://schema.org',
+			'@type': 'ProfessionalService',
+			'@id': `${siteUrl}/#photographer`,
+			name: 'Zac Rains Photography',
+			url: pageUrl,
+			image: shareImage,
+			description: pageDescription,
+			telephone: '+1-262-232-9332',
+			email: 'astrozac@outlook.com',
+			areaServed: ['Wisconsin', 'Worldwide'],
+			serviceType: ['Wedding photography', 'Portrait photography', 'Family photography', 'Brand photography'],
+			founder: { '@type': 'Person', name: 'Zac Rains' },
+			priceRange: '$$'
+		})}
+	</script>
 </svelte:head>
 
 	<div class="shell">
 		<div class="ambient-background" aria-hidden="true"></div>
-	<main>
-		<section class="hero chapter" id="top">
+		<a class="skip-link" href="#main-content">Skip to main content</a>
+	<main id="main-content" tabindex="-1">
+		<section class="hero chapter" id="top" aria-labelledby="hero-title">
 			<div class="hero-copy-wrap">
 				<div class="hero-identity" aria-label="Zac Rains, photographer">
-					<svg class="hero-mark" viewBox="0 0 60 44" role="img" aria-label="Lens logo mark">
-						<circle class="lens-ring" cx="30" cy="22" r="15" />
-						<circle class="lens-core" cx="30" cy="22" r="6" />
-						<path class="lens-line" d="M30 3v7M30 34v7M11 22h7M42 22h7" />
-					</svg>
-					<h1 class="hero-name">Zac <span>Rains</span></h1>
+					<span class="hero-mark"><LensLogo /></span>
+					<h1 class="hero-name" id="hero-title">Zac <span>Rains</span></h1>
 					<p class="hero-role">Photographer</p>
 				</div>
 			</div>
 			<div class="hero-portrait" aria-label="Selected photography slideshow">{#each heroSlides as slide, i}<div class="hero-slide"><img src={asset(slide[0])} alt={slide[1]} loading={i === 0 ? 'eager' : 'lazy'} decoding="async" /></div>{/each}</div>
 		</section>
 
-		<section class="about chapter" id="about">
+		<section class="about chapter" id="about" aria-label="About Zac Rains">
 			<div class="section-top reveal"><p class="eyebrow"><span>02</span> The person behind the camera</p><span class="section-index">ABOUT / 2026</span></div>
 			<div class="about-layout"><div class="about-heading reveal"><p class="side-note">A little<br />about me</p><h2>Hi, I'm<br /><em>Zac.</em></h2></div><div class="about-portrait reveal"><img src={portrait} alt="Zac Rains photographing his reflection in a mirror" /><span>THE GUY<br />BEHIND THE<br />LENS /</span></div><div class="about-text reveal"><p class="large-copy">Photographer, storyteller, and professional third wheel.</p><p>I make photographs with a sense of place and a little room to breathe. From Wisconsin weddings to the people and details that make a place memorable, I look for the honest frame that brings you back.</p><div class="facts"><span>Portraits</span><span>Weddings</span><span>Families</span><span>Brand stories</span></div></div></div>
 			<div class="about-marquee" aria-hidden="true"><div class="about-marquee-track"><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span></div><div class="about-marquee-track"><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span><span><b>ZAC RAINS</b> / PEOPLE / PLACES / DETAILS / LIGHT / </span></div></div>
 		</section>
 
-		<section class="work-reel chapter" id="work">
+		<section class="work-reel chapter" id="work" aria-label="Selected work">
 			<div class="reel-intro"><p class="eyebrow"><span>03</span> Selected work</p><h2>Frames<br /><em>worth<br />keeping.</em></h2><p class="reel-hint">Keep scrolling<br /><span>-></span></p></div>
 			<div class="reel-track" role="region" aria-label="Selected work photo album">{#each reel as item, i}<div class:hero-card={i === 0} class="reel-card"><div class="reel-photo"><img src={asset(item[0])} alt={item[1]} loading={i < 3 ? 'eager' : 'lazy'} decoding="async" /></div><div class="reel-meta"><strong>{item[1]}</strong><span>{item[2]}</span></div></div>{/each}</div>
 		</section>
 
-		<section class="contact chapter" id="contact">
+		<section class="contact chapter" id="contact" aria-label="Contact Zac Rains">
 			<div class="section-top"><p class="eyebrow"><span>04</span> Make something real</p><span class="section-index">LET'S CONNECT</span></div>
-			<div class="contact-layout"><div><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a></div><button class="business-card" class:flipped={cardFlipped} onpointermove={handleCardPointerMove} onpointerleave={resetCardPointer} onclick={() => (cardFlipped = !cardFlipped)} aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
+			<div class="contact-layout"><div class="contact-details"><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a><a class="phone" href="tel:+12622329332">+1 262 232 9332</a><a class="download-card" href="/zac-rains-business-card-print.pdf" download><span class="download-arrow">↓</span><span>Business card</span></a></div><div class="business-card" class:flipped={cardFlipped} onpointermove={handleCardPointerMove} onpointerleave={resetCardPointer} onclick={() => (cardFlipped = !cardFlipped)} onkeydown={(event) => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); cardFlipped = !cardFlipped; } }} role="button" tabindex="0" aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
 				<span class="card-face card-front" style="--card-bg: url({cardBg})">
 					<span class="card-topline"><span>01 / PERSONAL CARD</span><span>EST. 2024</span></span>
 					<span class="card-brand">
-						<svg class="card-mark" viewBox="0 0 60 44" aria-hidden="true"><circle class="lens-ring" cx="30" cy="22" r="15" /><circle class="lens-core" cx="30" cy="22" r="6" /><path class="lens-line" d="M30 3v7M30 34v7M11 22h7M42 22h7" /></svg>
+						<span class="card-mark"><LensLogo delay="-2.15s" label="Zac Rains camera aperture logo. Click for another photography trick." /></span>
 						<span><b>RAINS</b><small>PHOTOGRAPHY</small></span>
 					</span>
 					<span class="card-bottomline"><span>WISCONSIN / WORLDWIDE</span><i>Flip to connect -></i></span>
@@ -350,7 +408,7 @@
 						</span>
 					</span>
 				</span>
-			</button><a class="download-card" href="/zac-rains-business-card-print.pdf" download><span>&#8595;</span>Download business card PDF<small>Print-ready &middot; front + back &middot; bleed included</small></a></div>
+			</div></div>
 			<div class="contact-footer"><span>Copyright {new Date().getFullYear()} Zac Rains Photography</span><span>Good light, honestly seen.</span><a href="#top">Back to top ^</a></div>
 		</section>
 	</main>
@@ -392,12 +450,12 @@
 	.card-topline,.card-bottomline{display:flex;justify-content:space-between;align-items:center;gap:20px;color:rgba(241,238,231,.68);font:10px 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}
 	.card-topline span:last-child,.card-bottomline span:last-child{color:#ff5b1a}
 	.card-brand{display:flex;align-items:center;gap:18px;margin-top:auto;margin-bottom:auto}
-	.card-brand .card-mark{width:clamp(60px,10vw,102px);height:auto;overflow:visible;flex:none}
+	.card-brand .card-mark{display:block;width:clamp(74px,11vw,120px);height:auto;overflow:visible;flex:none}
 	.card-brand .cloud{fill:#f1eee7}.card-brand .drop{stroke:#ff5b1a;stroke-width:2.2;stroke-linecap:round;animation:pour 1.1s linear infinite;transform-origin:center}.card-brand .drop:nth-child(2){animation-delay:.2s}.card-brand .drop:nth-child(3){animation-delay:.45s}
 	.card-brand b{display:block;font-size:clamp(3.5rem,8vw,7.8rem);font-weight:600;line-height:.75;letter-spacing:-.1em}.card-brand small{display:block;margin-top:17px;color:#ff5b1a;font:clamp(9px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.34em}
 	.card-bottomline i{font:11px 'DM Mono',monospace;font-style:normal;letter-spacing:.08em;color:#f1eee7;transition:color .2s ease}.business-card:hover .card-bottomline i{color:#ff5b1a}
 	.card-info{display:flex;flex-direction:column;gap:8px;margin:22px 0 28px;font:clamp(10px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.08em;text-transform:none}.card-info .card-link{color:#f1eee7;text-decoration:none;transition:color .2s ease}.card-info .card-link:hover{color:#ff5b1a}
-	@media(max-width:760px){.business-card{width:100%;aspect-ratio:1.5}.card-face{padding:20px}.card-face::after{inset:9px}.card-brand{gap:10px}.card-brand .card-mark{width:45px}.card-brand b{font-size:clamp(2.8rem,14vw,4.6rem)}.card-brand small{margin-top:10px;font-size:8px;letter-spacing:.22em}.card-topline,.card-bottomline{font-size:8px;letter-spacing:.08em}.card-bottomline{align-items:flex-end}.card-bottomline i{font-size:9px}.card-info{gap:5px;margin:14px 0 16px;font-size:9px}}
+	@media(max-width:760px){.business-card{width:100%;aspect-ratio:1.5}.card-face{padding:20px}.card-face::after{inset:9px}.card-brand{gap:10px}.card-brand .card-mark{width:54px}.card-brand b{font-size:clamp(2.8rem,14vw,4.6rem)}.card-brand small{margin-top:10px;font-size:8px;letter-spacing:.22em}.card-topline,.card-bottomline{font-size:8px;letter-spacing:.08em}.card-bottomline{align-items:flex-end}.card-bottomline i{font-size:9px}.card-info{gap:5px;margin:14px 0 16px;font-size:9px}}
 
 	/* Give the reel room to breathe vertically and leave a clear landing area
 	   after the final frame. */
@@ -419,7 +477,7 @@
 	.hero{min-height:100vh;display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);align-items:center;gap:clamp(5vw,9vw,12vw);padding:clamp(8vh,13vh,18vh) 7vw}
 	.hero-copy-wrap{align-self:center;position:relative;z-index:2;padding:0;display:flex;flex-direction:column;align-items:flex-start}
 	.hero-identity{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;align-items:center;column-gap:clamp(16px,2vw,30px);margin:0}
-	.hero-mark{grid-row:1 / span 2;width:clamp(70px,9vw,128px);height:auto;overflow:visible}
+	.hero-mark{display:block;grid-row:1 / span 2;width:clamp(86px,10.5vw,148px);height:auto;overflow:visible}
 	.hero-mark .cloud{fill:#f1eee7}
 	.hero-mark .drop{stroke:#ff5b1a;stroke-width:2.2;stroke-linecap:round;animation:pour 1.1s linear infinite;transform-origin:center}
 	.hero-mark .drop:nth-child(2){animation-delay:.2s}
@@ -434,7 +492,7 @@
 	@media(max-width:760px){
 		.hero{display:flex;flex-direction:column;align-items:stretch;min-height:auto;gap:12vh;padding:14vh 7vw 16vh}
 		.hero-identity{column-gap:14px}
-		.hero-mark{width:58px}
+		.hero-mark{width:68px}
 		.hero-name{font-size:clamp(3.8rem,16vw,6rem)}
 		.hero-role{font-size:10px;margin-top:22px}
 		.hero-portrait{height:70vh;min-height:430px}
@@ -668,7 +726,7 @@
 	@media(min-width:761px) and (max-width:1100px){
 		.hero{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(24px,5vw,64px);padding:clamp(72px,10vh,112px) clamp(28px,7vw,72px);min-height:100vh}
 		.hero-identity{column-gap:clamp(12px,1.8vw,24px)}
-		.hero-mark{width:clamp(64px,8vw,96px)}
+		.hero-mark{width:clamp(76px,9vw,112px)}
 		.hero-name{font-size:clamp(4.35rem,9vw,7.3rem)}
 		.hero-role{font-size:11px}
 		.hero-portrait{height:min(74vh,680px);min-height:440px}
@@ -703,7 +761,7 @@
 
 		.hero{padding:clamp(82px,14vh,120px) clamp(18px,7vw,28px) clamp(92px,16vh,144px);gap:clamp(60px,12vh,112px)}
 		.hero-identity{column-gap:10px}
-		.hero-mark{width:clamp(48px,14vw,58px)}
+		.hero-mark{width:clamp(58px,16vw,70px)}
 		.hero-name{font-size:clamp(3.35rem,15.5vw,5.8rem);line-height:.8}
 		.hero-role{font-size:9px;letter-spacing:.12em;margin-top:16px;padding-left:4px}
 		.hero-portrait{height:clamp(360px,68vh,580px);min-height:0;width:100%}
@@ -744,7 +802,7 @@
 		.card-face{padding:clamp(16px,5vw,22px)}
 		.card-face::after{inset:9px}
 		.card-brand{gap:9px}
-		.card-brand .card-mark{width:clamp(40px,12vw,50px)}
+		.card-brand .card-mark{width:clamp(50px,14vw,62px)}
 		.card-brand b{font-size:clamp(2.6rem,13vw,4.5rem)}
 		.card-brand small{font-size:8px;letter-spacing:.2em;margin-top:9px}
 		.card-topline,.card-bottomline{font-size:7px;letter-spacing:.06em;gap:10px}
@@ -758,7 +816,7 @@
 
 	@media(max-width:360px){
 		.hero-name{font-size:3.2rem}
-		.hero-mark{width:45px}
+		.hero-mark{width:54px}
 		.about h2{font-size:4.05rem}
 		.reel-card,.reel-card.hero-card{width:78vw;min-width:78vw}
 		.card-topline,.card-bottomline{font-size:6.5px}
@@ -851,9 +909,6 @@
 
 	/* Current direction: warm orange accents, editorial neutrals, and a lens mark
 	   that keeps the name central without turning the identity into a weather pun. */
-	.lens-ring{fill:none;stroke:#f1eee7;stroke-width:2.5}
-	.lens-core{fill:#ff5b1a}
-	.lens-line{fill:none;stroke:#ff5b1a;stroke-width:2.5;stroke-linecap:round}
 	:global(:root){--rain-accent:#ff5b1a;--rain-accent-deep:#a53d13;--rain-accent-faint:rgba(255,91,26,.2)}
 	.contact{background:#e8dfd5;color:#1b1714}
 	.contact h2 em{color:#ff5b1a}
@@ -869,4 +924,34 @@
 	.download-card small{display:block;margin-left:8px;color:#786f68;font:9px 'DM Mono',monospace;letter-spacing:.05em;text-transform:none}
 	.download-card:hover{color:#1b1714}
 	@media(max-width:760px){.download-card{grid-column:auto;margin:20px 0 0;padding:11px 0;flex-wrap:wrap}.download-card small{flex-basis:100%;margin-left:31px}.contact-footer{margin-top:clamp(64px,10vh,92px)}}
+
+	/* Touch targets and mobile interaction affordances. */
+	@media(max-width:760px){
+		:global(html){scroll-padding-top:75px}
+		.email,.download-card,.contact-footer a{min-height:44px;align-items:center}
+		.email{display:inline-flex}
+		.reel-track{scroll-behavior:smooth;scrollbar-width:auto}
+		.reel-track:focus-visible{outline-offset:-3px}
+	}
+	@media(hover:none){.reel-card:hover img{transform:none;filter:none}.business-card:hover{--card-lift:0;filter:drop-shadow(0 28px 34px rgba(0,0,0,.28))}}
+
+	/* Contact details and footer alignment */
+	.contact-layout{position:relative}
+	.email{display:block;width:max-content;max-width:100%;border:0;padding:0;font-family:inherit;font-size:clamp(1rem,1.8vw,1.5rem)}
+	.email::after{display:none}
+	.phone{display:block;width:max-content;margin-top:14px;border:0;font-size:clamp(1rem,1.8vw,1.5rem);letter-spacing:-.03em}
+	.download-card{position:static;display:inline-flex;align-items:center;gap:10px;margin:18px 0 0;padding:0;border:0;color:#a53d13;font:inherit;font-size:clamp(1rem,1.8vw,1.5rem);letter-spacing:-.03em;text-transform:none}
+	.download-card span{color:inherit;font-size:inherit;line-height:1}
+	.download-card .download-arrow{font-size:1.2em;color:#ff5b1a}
+	.download-card small{display:none}
+	.contact-footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:24px}
+	.contact-footer span:nth-child(2){justify-self:center}
+	.contact-footer a{justify-self:end}
+	@media(max-width:760px){
+		.email{width:fit-content}
+		.download-card{margin-top:18px;font-size:clamp(.95rem,4.7vw,1.25rem)}
+		.contact-footer{display:grid;grid-template-columns:1fr auto;align-items:end}
+		.contact-footer span:nth-child(2){justify-self:start}
+		.contact-footer a{justify-self:end}
+	}
 </style>

@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import LensLogo from '$lib/LensLogo.svelte';
 
 	onMount(() => {
 		if (new URLSearchParams(window.location.search).has('print')) {
@@ -24,7 +25,7 @@
 			<div class="trim" aria-hidden="true"></div>
 			<div class="topline"><span>01 / PERSONAL CARD</span><span>EST. 2024</span></div>
 			<div class="brand">
-				<svg viewBox="0 0 60 44" aria-hidden="true"><circle class="ring" cx="30" cy="22" r="15" /><circle class="core" cx="30" cy="22" r="6" /><path d="M30 3v7M30 34v7M11 22h7M42 22h7" /></svg>
+				<span class="print-mark"><LensLogo interactive={false} delay="-4.3s" /></span>
 				<div><b>RAINS</b><small>PHOTOGRAPHY</small></div>
 			</div>
 			<div class="bottomline"><span>WISCONSIN / WORLDWIDE</span><span>FLIP TO CONNECT -&gt;</span></div>
@@ -54,7 +55,7 @@
 	.trim{position:absolute;inset:.25in;border:1px solid rgba(255,91,26,.78);pointer-events:none}
 	.topline,.bottomline{position:absolute;left:.58in;right:.58in;display:flex;justify-content:space-between;align-items:center;font:20px 'DM Mono',monospace;letter-spacing:.13em;color:rgba(241,238,231,.7)}
 	.topline{top:.48in}.topline span:last-child{color:#ff5b1a}.bottomline{bottom:.5in;font-size:18px}.bottomline span:last-child{color:#ff5b1a}
-	.brand{position:absolute;inset:1.35in .58in 1.15in;display:flex;align-items:center;gap:.35in}.brand svg{width:1.1in;height:auto;overflow:visible;flex:none}.ring{fill:none;stroke:#f1eee7;stroke-width:2.5}.core{fill:#ff5b1a}.brand path{fill:none;stroke:#ff5b1a;stroke-width:2.5;stroke-linecap:round}.brand b{display:block;font-size:1.52in;font-weight:600;line-height:.72;letter-spacing:-.1em}.brand small{display:block;margin-top:.22in;color:#ff5b1a;font:22px 'DM Mono',monospace;letter-spacing:.34em}
+	.brand{position:absolute;inset:1.35in .58in 1.15in;display:flex;align-items:center;gap:.35in}.print-mark{display:block;width:1.25in;height:auto;overflow:visible;flex:none}.brand b{display:block;font-size:1.52in;font-weight:600;line-height:.72;letter-spacing:-.1em}.brand small{display:block;margin-top:.22in;color:#ff5b1a;font:22px 'DM Mono',monospace;letter-spacing:.34em}
 	.back{background-image:linear-gradient(125deg,rgba(4,12,14,.91),rgba(4,12,14,.52) 52%,rgba(255,91,26,.18)),url('/card-background.jpg')}.back-grid{position:absolute;inset:.9in .72in;display:grid;grid-template-columns:1.18fr .82fr;align-items:stretch}.back-grid::before{content:'';position:absolute;left:58%;top:7%;bottom:7%;width:1px;background:linear-gradient(180deg,transparent,#ff5b1a 18%,#ff5b1a 82%,transparent);transform:skew(-12deg)}.contact{position:relative;display:flex;flex-direction:column;justify-content:center;gap:.22in;padding:.25in .35in}.contact small{color:#ff5b1a;font:18px 'DM Mono',monospace;letter-spacing:.22em}.contact strong{font:500 .42in 'DM Mono',monospace;letter-spacing:.02em;line-height:1.14}.call strong{white-space:nowrap}.call::before{content:'';position:absolute;left:0;top:18%;width:7px;height:64%;background:#ff5b1a}.mail{padding-left:.65in}.mail strong{font-size:.3in}
 	.note{max-width:1000px;margin:24px auto 0;text-align:center}
 	@media(max-width:900px){main{padding:20px 12px}.controls{align-items:flex-start;flex-direction:column}.sheet{width:100%;overflow:auto;justify-content:start}.card{width:min(7.5in,94vw);height:auto;aspect-ratio:5/3}.topline,.bottomline{font-size:clamp(8px,2.1vw,20px)}.brand b{font-size:clamp(48px,16vw,146px)}.brand small{font-size:clamp(8px,2.3vw,22px)}.contact strong{font-size:clamp(18px,4.4vw,40px)}.mail strong{font-size:clamp(14px,3.2vw,29px)}}
@@ -62,6 +63,6 @@
 	@media print{
 		:global(html),:global(body){width:3.75in;height:auto;background:#fff}
 		main{padding:0;min-height:0}.controls,.note{display:none}.sheet{display:block}.card{width:3.75in;height:2.25in;box-shadow:none;break-after:page;page-break-after:always}.card:last-child{break-after:auto;page-break-after:auto}
-		.trim{inset:.125in;border-width:.5px}.topline,.bottomline{left:.29in;right:.29in;font-size:10px}.topline{top:.24in}.bottomline{bottom:.25in;font-size:9px}.brand{inset:.675in .29in .575in;gap:.175in}.brand svg{width:.55in}.brand b{font-size:.76in}.brand small{margin-top:.11in;font-size:11px}.back-grid{inset:.45in .36in}.contact{gap:.11in;padding:.125in .175in}.contact small{font-size:9px}.contact strong{font-size:.21in}.call::before{width:3.5px}.mail{padding-left:.325in}.mail strong{font-size:.15in}
+		.trim{inset:.125in;border-width:.5px}.topline,.bottomline{left:.29in;right:.29in;font-size:10px}.topline{top:.24in}.bottomline{bottom:.25in;font-size:9px}.brand{inset:.675in .29in .575in;gap:.175in}.print-mark{width:.625in}.brand b{font-size:.76in}.brand small{margin-top:.11in;font-size:11px}.back-grid{inset:.45in .36in}.contact{gap:.11in;padding:.125in .175in}.contact small{font-size:9px}.contact strong{font-size:.21in}.call::before{width:3.5px}.mail{padding-left:.325in}.mail strong{font-size:.15in}
 	}
 </style>
