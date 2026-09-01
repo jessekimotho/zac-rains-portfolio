@@ -1,0 +1,19 @@
+{
+	"name": "Zac Rains Photography",
+	"short_name": "Zac Rains",
+	"description": "Honest photographs of people, places, details, and the moments worth keeping.",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#080b0c",
+	"theme_color": "#080b0c",
+	"lang": "en-US",
+	"icons": [
+		{
+			"src": "/favicon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any maskable"
+		}
+	]
+}

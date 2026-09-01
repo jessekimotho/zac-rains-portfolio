@@ -6,3 +6,5 @@ build/
 .env.*
 !.env.example
 dev-server-*.log
+.edge-card-render/
+*-check.png

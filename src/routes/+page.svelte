@@ -51,32 +51,52 @@
 		['newer/optimized/D7B805B9-7968-4B1C-B69A-32EA8EFD1393-Topaz-Gigapixel-4X-2.jpg', '13 / The photographer', 'portrait / zac rains']
 	];
 	let cardFlipped = false;
+	let cardFlipping = false;
+	/** @type {ReturnType<typeof setTimeout> | undefined} */
+	let cardFlipTimer;
 	const cardBg = asset('card-background.jpg');
+	/** @type {{frame: number, bounds: DOMRect | null, x: number, y: number}} */
+	const cardMotion = { frame: 0, bounds: null, x: 0, y: 0 };
+
+	const flipCard = () => {
+		cardFlipped = !cardFlipped;
+		cardFlipping = false;
+		clearTimeout(cardFlipTimer);
+		requestAnimationFrame(() => {
+			cardFlipping = true;
+			cardFlipTimer = setTimeout(() => (cardFlipping = false), 900);
+		});
+	};
+	
 	/** @param {PointerEvent} event */
 	const handleCardPointerMove = (event) => {
 		if (event.pointerType === 'touch' || window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('low-power')) return;
 		const card = event.currentTarget;
 		if (!(card instanceof HTMLElement)) return;
-		const bounds = card.getBoundingClientRect();
-		const x = (event.clientX - bounds.left) / bounds.width;
-		const y = (event.clientY - bounds.top) / bounds.height;
-		const tiltX = (x - 0.5) * 10;
-		const tiltY = (0.5 - y) * 8;
-		const shiftX = (x - 0.5) * 18;
-		const shiftY = (y - 0.5) * 14;
-
-		card.style.setProperty('--card-tilt-x', `${tiltX}deg`);
-		card.style.setProperty('--card-tilt-y', `${tiltY}deg`);
-		card.style.setProperty('--card-shift-x', `${shiftX}px`);
-		card.style.setProperty('--card-shift-y', `${shiftY}px`);
-		card.style.setProperty('--card-glare-x', `${x * 100}%`);
-		card.style.setProperty('--card-glare-y', `${y * 100}%`);
+		const bounds = cardMotion.bounds || card.getBoundingClientRect();
+		cardMotion.bounds = bounds;
+		cardMotion.x = Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width));
+		cardMotion.y = Math.max(0, Math.min(1, (event.clientY - bounds.top) / bounds.height));
+		if (cardMotion.frame) return;
+		cardMotion.frame = requestAnimationFrame(() => {
+			cardMotion.frame = 0;
+			const { x, y } = cardMotion;
+			card.style.setProperty('--card-tilt-x', `${(x - 0.5) * 6}deg`);
+			card.style.setProperty('--card-tilt-y', `${(0.5 - y) * 5}deg`);
+			card.style.setProperty('--card-shift-x', `${(x - 0.5) * 12}px`);
+			card.style.setProperty('--card-shift-y', `${(y - 0.5) * 10}px`);
+			card.style.setProperty('--card-glare-x', `${x * 100}%`);
+			card.style.setProperty('--card-glare-y', `${y * 100}%`);
+		});
 	};
 
 	/** @param {PointerEvent} event */
 	const resetCardPointer = (event) => {
 		const card = event.currentTarget;
 		if (!(card instanceof HTMLElement)) return;
+		if (cardMotion.frame) cancelAnimationFrame(cardMotion.frame);
+		cardMotion.frame = 0;
+		cardMotion.bounds = null;
 		card.style.removeProperty('--card-tilt-x');
 		card.style.removeProperty('--card-tilt-y');
 		card.style.removeProperty('--card-shift-x');
@@ -391,14 +411,12 @@
 
 		<section class="contact chapter" id="contact" aria-label="Contact Zac Rains">
 			<div class="section-top"><p class="eyebrow"><span>04</span> Make something real</p><span class="section-index">LET'S CONNECT</span></div>
-			<div class="contact-layout"><div class="contact-details"><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a><a class="phone" href="tel:+12622329332">+1 262 232 9332</a><a class="download-card" href="/zac-rains-business-card-print.pdf" download><span class="download-arrow">↓</span><span>Business card</span></a></div><div class="business-card" class:flipped={cardFlipped} onpointermove={handleCardPointerMove} onpointerleave={resetCardPointer} onclick={() => (cardFlipped = !cardFlipped)} onkeydown={(event) => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); cardFlipped = !cardFlipped; } }} role="button" tabindex="0" aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
+			<div class="contact-layout"><div class="contact-details"><h2>Let's make<br /><em>something</em><br />real.</h2><a class="email" href="mailto:astrozac@outlook.com">astrozac@outlook.com <span>↗</span></a><a class="phone" href="tel:+12622329332">+1 262 232 9332</a><a class="download-card" href="/zac-rains-business-card-print.pdf" download><span class="download-arrow">↓</span><span>Business card</span></a></div><div class="business-card" class:flipped={cardFlipped} class:card-flipping={cardFlipping} onpointermove={handleCardPointerMove} onpointerleave={resetCardPointer} onclick={flipCard} onkeydown={(event) => { if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); flipCard(); } }} role="button" tabindex="0" aria-label="Flip Zac Rains business card" aria-pressed={cardFlipped}>
 				<span class="card-face card-front" style="--card-bg: url({cardBg})">
-					<span class="card-topline"><span>01 / PERSONAL CARD</span><span>EST. 2024</span></span>
 					<span class="card-brand">
 						<span class="card-mark"><LensLogo delay="-2.15s" label="Zac Rains camera aperture logo. Click for another photography trick." /></span>
 						<span><b>RAINS</b><small>PHOTOGRAPHY</small></span>
 					</span>
-					<span class="card-bottomline"><span>WISCONSIN / WORLDWIDE</span><i>Flip to connect -></i></span>
 				</span>
 				<span class="card-face card-back" style="--card-bg: url({cardBg})">
 					<span class="back-content">
@@ -408,7 +426,7 @@
 						</span>
 					</span>
 				</span>
-			</div></div>
+			</div><span class="card-flip-hint">Flip to connect →</span></div>
 			<div class="contact-footer"><span>Copyright {new Date().getFullYear()} Zac Rains Photography</span><span>Good light, honestly seen.</span><a href="#top">Back to top ^</a></div>
 		</section>
 	</main>
@@ -436,25 +454,25 @@
 
 	/* Signature contact card */
 	.contact-layout{align-items:center}
-	.business-card{position:relative;width:min(100%,620px);aspect-ratio:1.72;border:0;padding:0;background:transparent;cursor:pointer;perspective:1600px;filter:drop-shadow(0 28px 34px rgba(0,0,0,.28));text-align:left;color:#f1eee7}
+	.business-card{position:relative;width:min(100%,620px);aspect-ratio:1.72;border:0;padding:0;background:transparent;cursor:pointer;perspective:1600px;text-align:left;color:#f1eee7}
 	.business-card:focus-visible{outline:2px solid #ff5b1a;outline-offset:9px}
 	.card-face{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;padding:clamp(22px,4vw,46px);border:1px solid rgba(255,255,255,.18);border-radius:2px;backface-visibility:hidden;transform-style:preserve-3d;transition:transform .9s cubic-bezier(.2,.75,.2,1),box-shadow .9s ease}
 	.card-face::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,rgba(8,11,12,.58) 0%,rgba(8,11,12,.22) 48%,rgba(8,11,12,.56) 100%),var(--card-bg);background-size:cover;background-position:center;z-index:-2;transform:scale(1.04);transition:transform 1.2s ease}
 	.card-face::after{content:'';position:absolute;inset:14px;border:1px solid rgba(255,91,26,.45);pointer-events:none;z-index:-1}
 	.card-front{transform:rotateY(0deg);box-shadow:inset 0 0 80px rgba(0,0,0,.28)}
-	.card-back{transform:rotateY(180deg);background:#111817;color:#f1eee7}
+	.card-back{transform:rotateY(180deg);background:#111817;color:#f1eee7;padding:0}
 	.card-back::before{background:linear-gradient(115deg,rgba(8,11,12,.62),rgba(8,11,12,.26)),var(--card-bg);background-position:center}
 	.business-card.flipped .card-front{transform:rotateY(-180deg)}
 	.business-card.flipped .card-back{transform:rotateY(0deg)}
 	.business-card:hover .card-face::before{transform:scale(1.09)}
 	.card-topline,.card-bottomline{display:flex;justify-content:space-between;align-items:center;gap:20px;color:rgba(241,238,231,.68);font:10px 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase}
 	.card-topline span:last-child,.card-bottomline span:last-child{color:#ff5b1a}
-	.card-brand{display:flex;align-items:center;gap:18px;margin-top:auto;margin-bottom:auto}
+	.card-brand{display:flex;align-items:center;gap:18px;margin-top:auto;margin-bottom:auto;margin-left:-12px}
 	.card-brand .card-mark{display:block;width:clamp(74px,11vw,120px);height:auto;overflow:visible;flex:none}
 	.card-brand .cloud{fill:#f1eee7}.card-brand .drop{stroke:#ff5b1a;stroke-width:2.2;stroke-linecap:round;animation:pour 1.1s linear infinite;transform-origin:center}.card-brand .drop:nth-child(2){animation-delay:.2s}.card-brand .drop:nth-child(3){animation-delay:.45s}
-	.card-brand b{display:block;font-size:clamp(3.5rem,8vw,7.8rem);font-weight:600;line-height:.75;letter-spacing:-.1em}.card-brand small{display:block;margin-top:17px;color:#ff5b1a;font:clamp(9px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.34em}
+	.card-brand b{display:block;font-size:clamp(3.5rem,8vw,7.8rem);font-weight:600;line-height:.75;margin-left:-4px;letter-spacing:-.1em}.card-brand small{display:block;margin-top:4px;color:#ff5b1a;font:clamp(9px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.34em}
 	.card-bottomline i{font:11px 'DM Mono',monospace;font-style:normal;letter-spacing:.08em;color:#f1eee7;transition:color .2s ease}.business-card:hover .card-bottomline i{color:#ff5b1a}
-	.card-info{display:flex;flex-direction:column;gap:8px;margin:22px 0 28px;font:clamp(10px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.08em;text-transform:none}.card-info .card-link{color:#f1eee7;text-decoration:none;transition:color .2s ease}.card-info .card-link:hover{color:#ff5b1a}
+	.card-info{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin:22px 0 28px;font:clamp(10px,1.2vw,13px) 'DM Mono',monospace;letter-spacing:.08em;text-transform:none}.card-info .card-link{align-self:flex-start;width:fit-content;color:#f1eee7;text-decoration:none;transition:color .2s ease}.card-info .card-link:hover{color:#ff5b1a}
 	@media(max-width:760px){.business-card{width:100%;aspect-ratio:1.5}.card-face{padding:20px}.card-face::after{inset:9px}.card-brand{gap:10px}.card-brand .card-mark{width:54px}.card-brand b{font-size:clamp(2.8rem,14vw,4.6rem)}.card-brand small{margin-top:10px;font-size:8px;letter-spacing:.22em}.card-topline,.card-bottomline{font-size:8px;letter-spacing:.08em}.card-bottomline{align-items:flex-end}.card-bottomline i{font-size:9px}.card-info{gap:5px;margin:14px 0 16px;font-size:9px}}
 
 	/* Give the reel room to breathe vertically and leave a clear landing area
@@ -534,32 +552,30 @@
 	/* Contact side: keep the back focused on the two ways to reach Zac, with
 	   enough contrast and movement to feel like part of the visual identity. */
 	.card-back{isolation:isolate;padding:clamp(22px,4vw,46px);background:#071316;color:#f1eee7}
-	.card-back::before{background:linear-gradient(125deg,rgba(4,12,14,.9) 0%,rgba(4,12,14,.5) 52%,rgba(76,166,216,.2) 100%),var(--card-bg);background-position:center;background-size:cover;filter:saturate(1.25) contrast(1.12);transform:scale(1.06)}
+	.card-back::before{background:linear-gradient(125deg,rgba(4,12,14,.9) 0%,rgba(4,12,14,.5) 52%,rgba(76,166,216,.2) 100%),var(--card-bg);background-position:center bottom;background-size:cover;filter:saturate(1.25) contrast(1.12);transform:scale(1.06)}
 	.card-back::after{inset:13px;border-color:rgba(76,166,216,.72);clip-path:polygon(0 0,100% 0,100% 82%,92% 100%,0 100%)}
-	.back-content{position:relative;z-index:1;display:flex;align-items:stretch;justify-content:center;flex:1;margin:0;padding:clamp(8px,1.5vw,18px) 0}
+	.back-content{position:relative;z-index:1;display:flex;align-items:stretch;justify-content:center;flex:1;margin:0;padding:0}
 	.back-content::before{content:'';position:absolute;inset:4% 10% 4% -8%;border:1px solid rgba(76,166,216,.34);clip-path:polygon(0 0,100% 0,89% 100%,0 100%);pointer-events:none}
-	.card-back .card-info{position:relative;display:grid;grid-template-columns:1.18fr .82fr;align-items:stretch;width:100%;min-height:100%;gap:0;margin:0;padding:0;font:10px 'DM Mono',monospace;letter-spacing:.03em}
-	.card-back .card-info::before{content:'';position:absolute;left:58%;top:7%;bottom:7%;width:1px;background:linear-gradient(180deg,transparent,var(--rain-accent) 18%,var(--rain-accent) 82%,transparent);opacity:.72;transform:skew(-12deg);pointer-events:none}
-	.card-back .card-info .card-link{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:12px;min-width:0;padding:clamp(14px,2.4vw,30px) clamp(13px,2.8vw,38px);border:0;color:#f1eee7;text-decoration:none;transition:transform .3s ease,background .3s ease,color .3s ease}
-	.card-back .card-info .card-link:first-child{background:linear-gradient(108deg,rgba(76,166,216,.13),transparent 72%);}
-	.card-back .card-info .card-link:first-child::before{content:'';position:absolute;left:0;top:18%;width:4px;height:64%;background:var(--rain-accent);box-shadow:0 0 18px rgba(76,166,216,.7)}
-	.card-back .card-info .card-link:last-child{padding-left:clamp(20px,3.5vw,48px);background:linear-gradient(108deg,rgba(4,12,14,.12),rgba(76,166,216,.1));}
-	.card-back .card-info .card-link:hover{background:rgba(76,166,216,.18);color:#fff;transform:translateY(-4px)}
+	.card-back .card-info{position:relative;display:grid;grid-template-columns:1fr;align-items:start;width:100%;max-width:100%;min-height:0;gap:clamp(16px,2vw,24px);margin:auto;padding:clamp(14px,2vw,24px) clamp(13px,2.8vw,38px);font:10px 'DM Mono',monospace;letter-spacing:.03em}
+	.card-back .card-info::before{content:'';position:absolute;left:7%;right:7%;top:50%;height:1px;background:linear-gradient(90deg,transparent,var(--rain-accent),transparent);opacity:.72;pointer-events:none}
+	.card-back .card-info .card-link{position:relative;display:flex;align-self:start;justify-self:start;width:fit-content;max-width:100%;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;min-width:0;padding:0;border:0;background:transparent;color:#f1eee7;text-decoration:none;transition:transform .3s ease,color .3s ease}
+	.card-back .card-info .card-link:first-child{background:transparent;}
+	.card-back .card-info .card-link:first-child::before{display:none}
+	.card-back .card-info .card-link:last-child{justify-self:start;padding-left:0;background:transparent;}
+	.card-back .card-info .card-link:hover{background:transparent;color:#fff;transform:translateY(-4px)}
 	.card-back .card-info .card-link:focus-visible{outline:1px solid var(--rain-accent);outline-offset:-5px}
-	.card-back .card-info small{color:var(--rain-accent);font-size:9px;letter-spacing:.22em;line-height:1}
-	.card-back .card-info span{max-width:100%;overflow-wrap:anywhere;text-align:left;line-height:1.08;letter-spacing:.01em}
-	.card-back .card-info .card-link:first-child span{font-size:clamp(15px,2.55vw,27px);letter-spacing:.055em;white-space:nowrap}
-	.card-back .card-info .card-link:last-child span{font-size:clamp(11px,1.4vw,16px);line-height:1.25}
+	.card-back .card-info small{color:#ff9a6e;font-size:clamp(12px,1.15vw,15px);font-weight:600;letter-spacing:.22em;line-height:1}
+	.card-back .card-info span{display:block;min-width:0;max-width:100%;overflow-wrap:anywhere;text-align:left;line-height:1.08;letter-spacing:.01em}
+	.card-back .card-info .card-link:first-child span,.card-back .card-info .card-link:last-child span{font-size:clamp(20px,2.8vw,30px);letter-spacing:.04em;line-height:1.15;white-space:nowrap;overflow-wrap:normal}
 	@media(max-width:760px){
 		.card-back::after{inset:9px}
-		.back-content{padding:4px 0}
+		.back-content{padding:0}
 		.back-content::before{inset:3% 2% 3% -5%}
-		.card-back .card-info{grid-template-columns:1fr;gap:10px}
+		.card-back .card-info{grid-template-columns:1fr;gap:10px;width:100%;max-width:100%}
 		.card-back .card-info::before{left:7%;right:7%;top:50%;bottom:auto;width:auto;height:1px;transform:none;background:linear-gradient(90deg,transparent,var(--rain-accent),transparent)}
-		.card-back .card-info .card-link,.card-back .card-info .card-link:last-child{padding:14px 14px 14px 22px;gap:8px}
+		.card-back .card-info .card-link,.card-back .card-info .card-link:last-child{align-self:start;justify-self:start;padding:0;gap:8px}
 		.card-back .card-info small{font-size:8px}
-		.card-back .card-info .card-link:first-child span{font-size:clamp(17px,5vw,24px)}
-		.card-back .card-info .card-link:last-child span{font-size:clamp(11px,3.1vw,14px)}
+		.card-back .card-info .card-link:first-child span,.card-back .card-info .card-link:last-child span{font-size:clamp(16px,5vw,24px)}
 	}
 	/* About section: let the introduction land before the supporting story. */
 	.about{min-height:155vh;padding-bottom:8vh}
@@ -878,23 +894,29 @@
 		--card-glare-y:50%;
 		transform:perspective(1600px) rotateX(var(--card-tilt-y)) rotateY(var(--card-tilt-x)) translateZ(var(--card-lift,0px));
 		transform-style:preserve-3d;
-		transition:transform .2s cubic-bezier(.2,.75,.2,1),filter .35s ease;
+		transition:transform .28s cubic-bezier(.2,.75,.2,1),box-shadow .35s ease;
 		will-change:transform;
 		touch-action:manipulation;
 	}
-	.business-card:hover{--card-lift:4px;filter:drop-shadow(0 34px 38px rgba(0,0,0,.32))}
+	.business-card{box-shadow:0 28px 34px rgba(0,0,0,.28)}
+	.business-card:hover{--card-lift:4px;box-shadow:0 34px 38px rgba(0,0,0,.3)}
+	@keyframes card-shadow-flip{0%,100%{box-shadow:0 28px 34px rgba(0,0,0,.28)}45%,55%{box-shadow:0 0 0 rgba(0,0,0,0)}}
+	.business-card.card-flipping{animation:card-shadow-flip .9s ease both}
 	.card-face::before{transform:translate3d(calc(var(--card-shift-x) * -0.55),calc(var(--card-shift-y) * -0.55),0) scale(1.04)}
-	.business-card:hover .card-face::before{transform:translate3d(calc(var(--card-shift-x) * -0.55),calc(var(--card-shift-y) * -0.55),0) scale(1.09)}
+	.business-card:hover .card-face::before{transform:translate3d(calc(var(--card-shift-x) * -0.55),calc(var(--card-shift-y) * -0.55),0) scale(1.07)}
 	.card-face::after{background:radial-gradient(circle at var(--card-glare-x) var(--card-glare-y),rgba(255,255,255,.16),transparent 36%)}
-	.card-face > *{transform:translate3d(calc(var(--card-shift-x) * .25),calc(var(--card-shift-y) * .25),0);transition:transform .2s ease-out}
-	@media(prefers-reduced-motion:reduce){.business-card{transform:none;transition:none;will-change:auto}.card-face::before,.business-card:hover .card-face::before,.card-face > *{transform:none;transition:none}}
+	/* Keep the type in a light 2D path: a small vertical parallax reads as depth
+	   without applying the card's perspective transform to every glyph. */
+	.card-face > *{transform:translateY(calc(var(--card-shift-y) * .32));transition:transform .18s ease-out}
+	@media(prefers-reduced-motion:reduce){.business-card{transform:none;transition:none;will-change:auto}.business-card.card-flipping{animation:none}.card-face::before,.business-card:hover .card-face::before,.card-face > *{transform:none;transition:none}}
 	:global(.low-power) .work-puddles,
 	:global(.low-power) .about-rain,
 	:global(.low-power) .storm-rain,
 	:global(.low-power) .storm-flash{display:none!important}
 	:global(.low-power) .reel-photo img{transition:none;filter:none}
 	:global(.low-power) .reel-track{will-change:transform}
-	:global(.low-power) .business-card{will-change:auto;transition:none;filter:none}
+	:global(.low-power) .business-card{will-change:auto;transition:none;box-shadow:none}
+	:global(.low-power) .business-card.card-flipping{animation:none}
 
 	/* Square image theme: every homepage photograph gets the same frame language. */
 	.hero-portrait{aspect-ratio:1;height:auto;min-height:0;border:0;background:#172326}
@@ -933,7 +955,7 @@
 		.reel-track{scroll-behavior:smooth;scrollbar-width:auto}
 		.reel-track:focus-visible{outline-offset:-3px}
 	}
-	@media(hover:none){.reel-card:hover img{transform:none;filter:none}.business-card:hover{--card-lift:0;filter:drop-shadow(0 28px 34px rgba(0,0,0,.28))}}
+	@media(hover:none){.reel-card:hover img{transform:none;filter:none}.business-card:hover{--card-lift:0;box-shadow:0 28px 34px rgba(0,0,0,.28)}}
 
 	/* Contact details and footer alignment */
 	.contact-layout{position:relative}
@@ -944,9 +966,36 @@
 	.download-card span{color:inherit;font-size:inherit;line-height:1}
 	.download-card .download-arrow{font-size:1.2em;color:#ff5b1a}
 	.download-card small{display:none}
-	.contact-footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:24px}
-	.contact-footer span:nth-child(2){justify-self:center}
-	.contact-footer a{justify-self:end}
+	.contact-details > .email,
+	.contact-details > .phone,
+	.contact-details > .download-card{position:relative;transition:color .25s ease,transform .25s ease}
+	.contact-details > .email::after,
+	.contact-details > .phone::after,
+	.contact-details > .download-card::after{content:'';position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--rain-accent);transform:scaleX(0);transform-origin:left;transition:transform .3s cubic-bezier(.2,.75,.2,1)}
+	.contact-details > .email:hover,
+	.contact-details > .phone:hover,
+	.contact-details > .download-card:hover{color:var(--rain-accent);transform:translateX(7px)}
+	.contact-details > .email:hover::after,
+	.contact-details > .phone:hover::after,
+	.contact-details > .download-card:hover::after{transform:scaleX(1)}
+	.email span{display:inline-block;transition:transform .25s ease}
+	.email:hover span{transform:translate(3px,-3px)}
+	.download-card .download-arrow{transition:transform .25s ease,color .25s ease}
+	.download-card:hover .download-arrow{transform:translateY(4px)}
+	@media(prefers-reduced-motion:reduce){.contact-details > .email,.contact-details > .phone,.contact-details > .download-card,.email span,.download-card .download-arrow{transition:none}}
+	.contact-footer{
+		display:grid;
+		grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+		align-items:end;
+		gap:24px;
+		width:100%;
+	}
+	/* The stacking rule above makes the footer relative; reset its horizontal
+	   offset so it stays aligned with the contact section's content edge. */
+	.contact > .contact-footer{left:0;right:0}
+	.contact-footer span,.contact-footer a{min-width:0;overflow-wrap:anywhere}
+	.contact-footer span:nth-child(2){justify-self:center;text-align:center}
+	.contact-footer a{justify-self:end;text-align:right;white-space:nowrap}
 	@media(max-width:760px){
 		.email{width:fit-content}
 		.download-card{margin-top:18px;font-size:clamp(.95rem,4.7vw,1.25rem)}
@@ -954,4 +1003,13 @@
 		.contact-footer span:nth-child(2){justify-self:start}
 		.contact-footer a{justify-self:end}
 	}
+	.card-face.card-back{padding:0}
+	.card-face::after{border:0}
+	.business-card::after{content:'Flip to connect →';position:absolute;top:calc(100% + 14px);left:0;width:100%;color:#111817;font:700 clamp(11px,1.1vw,14px) 'DM Mono',monospace;letter-spacing:.1em;text-align:center;text-transform:uppercase;pointer-events:none;opacity:1;transition:opacity .28s ease;transform-origin:center;animation:flip-hint-pulse 2.8s ease-in-out infinite}
+	.business-card.flipped::after{opacity:0;animation:none}
+	@keyframes flip-hint-pulse{0%,100%{opacity:.62;transform:scale(1)}50%{opacity:1;transform:scale(1.035)}}
+	@media(prefers-reduced-motion:reduce){.business-card::after{animation:none}}
+	.card-flip-hint{display:none}
+	.card-brand small{color:#ff8a5c;font-size:clamp(11px,1.5vw,17px);font-weight:600;letter-spacing:.3em}
+	@media(max-width:760px){.card-flip-hint{margin-top:12px}.card-brand small{font-size:10px}}
 </style>

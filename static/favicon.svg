@@ -1,5 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#080b0c"/>
-  <path d="M13 35c-3.6 0-5.8-2.3-5.8-5.2 0-2.8 2.2-5 5.1-5.2C13.5 18.8 19.1 14 25.8 14c4.2 0 7.9 2.1 10.1 5.3 1.3-.8 2.8-1.2 4.4-1.2 4.7 0 8.5 3.8 8.5 8.5 2.7.5 4.7 2.8 4.7 5.6 0 3.2-2.6 5.8-5.8 5.8H13Z" fill="#f5f2ec"/>
-  <path d="m19 41-2.5 12M32 41l-2.5 14M45 41l-2.5 12" stroke="#4ca6d8" stroke-width="4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <title>Zac Rains Photography</title>
+  <rect width="32" height="32" rx="7" fill="#0a0e0e"/>
+  <circle cx="16" cy="16" r="11.5" fill="#ff5b1a"/>
+  <path fill="#0a0e0e" d="M16 9.2a6.8 6.8 0 0 1 5.9 3.4l-5.9 3.4z"/>
+  <path fill="#0a0e0e" d="M21.9 12.6a6.8 6.8 0 0 1 0 6.8L16 16z"/>
+  <path fill="#0a0e0e" d="M21.9 19.4a6.8 6.8 0 0 1-5.9 3.4V16z"/>
+  <path fill="#0a0e0e" d="M16 22.8a6.8 6.8 0 0 1-5.9-3.4l5.9-3.4z"/>
+  <path fill="#0a0e0e" d="M10.1 19.4a6.8 6.8 0 0 1 0-6.8l5.9 3.4z"/>
+  <path fill="#0a0e0e" d="M10.1 12.6A6.8 6.8 0 0 1 16 9.2V16z"/>
+  <circle cx="16" cy="16" r="3.15" fill="#f1eee7"/>
+  <circle cx="16" cy="16" r="1.55" fill="#0a0e0e"/>
 </svg>

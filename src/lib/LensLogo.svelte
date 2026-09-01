@@ -18,15 +18,14 @@
 	let restMode = 1;
 	let lastRandomTrick = -1;
 	let replacingTrick = false;
+	let hovering = false;
 	/** @type {ReturnType<typeof setTimeout> | undefined} */
 	let ambientTimer;
-	/** @type {((value: number) => void) | undefined} */
-	let easeProximity;
 
 	const scheduleAmbientTrick = (firstRun = false) => {
 		window.clearTimeout(ambientTimer);
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-		const wait = firstRun ? gsap.utils.random(3200, 5800) : gsap.utils.random(5200, 10500);
+		const wait = firstRun ? gsap.utils.random(1800, 3200) : gsap.utils.random(4200, 7600);
 		ambientTimer = window.setTimeout(() => {
 			if (document.visibilityState === 'visible' && !performing) playTrick(true);
 			else scheduleAmbientTrick();
@@ -36,14 +35,16 @@
 	const finishTrick = () => {
 		if (!logo) return;
 		const parts = [logo, ...logo.querySelectorAll('.lens-ring,.lens-glass,.lens-aperture,.lens-glint,.lens-flash')];
-		gsap.set(parts, { clearProps: 'transform,opacity,filter,x,y,rotation,scale' });
+		gsap.set(parts, { clearProps: 'transform,opacity,filter' });
 		performing = false;
 		restMode = gsap.utils.random(1, 5, 1);
 		if (!replacingTrick) scheduleAmbientTrick();
 	};
 
 	const playTrick = (randomize = false) => {
-		if (!logo || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		// Ambient motion respects the user's preference, but an intentional click
+		// still needs a clear response so the control never feels broken.
+		if (!logo || (randomize && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
 		const ring = logo.querySelector('.lens-ring');
 		const glass = logo.querySelector('.lens-glass');
 		const aperture = logo.querySelector('.lens-aperture');
@@ -56,7 +57,7 @@
 		activeTimeline?.kill();
 		replacingTrick = false;
 		gsap.killTweensOf(targets);
-		gsap.set(targets, { clearProps: 'transform,opacity,filter,x,y,rotation,scale' });
+		gsap.set(targets, { clearProps: 'transform,opacity,filter' });
 		gsap.set(flash, { opacity: 0, scale: 0.35 });
 		performing = true;
 
@@ -168,12 +169,12 @@
 		trickName = `${trick.name}. ${selectedIndex + 1} of ${tricks.length}.`;
 		activeTimeline = gsap.timeline({ defaults: { transformOrigin: 'center center' }, onComplete: finishTrick, onInterrupt: finishTrick });
 		trick.run(activeTimeline);
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) activeTimeline.timeScale(1.8);
 	};
 
 	onMount(() => {
 		restMode = gsap.utils.random(1, 5, 1);
 		scheduleAmbientTrick(true);
-		easeProximity = gsap.quickTo(logoHitArea, 'scale', { duration: 0.34, ease: 'power3.out' });
 		/** @param {PointerEvent} event */
 		const handlePointerMove = (event) => {
 			if (!logoHitArea) return;
@@ -182,12 +183,30 @@
 			const nearestX = Math.max(bounds.left, Math.min(event.clientX, bounds.right));
 			const nearestY = Math.max(bounds.top, Math.min(event.clientY, bounds.bottom));
 			const distance = Math.hypot(event.clientX - nearestX, event.clientY - nearestY);
-			const proximity = Math.max(0, 1 - distance / 150);
-			easeProximity?.(1 + proximity * 0.095);
+			const proximity = Math.max(0, 1 - distance / 300);
+			logoHitArea.style.setProperty('--proximity-scale', String(1 + proximity * 0.42));
+			logoHitArea.style.setProperty('--proximity-glow', `${proximity * 14}px`);
+			logoHitArea.style.setProperty('--proximity-alpha', String(0.08 + proximity * 0.34));
+		};
+		const handlePointerEnter = () => {
+			hovering = true;
+			logoHitArea.style.setProperty('--proximity-scale', '1.42');
+			logoHitArea.style.setProperty('--proximity-glow', '14px');
+			logoHitArea.style.setProperty('--proximity-alpha', '.42');
+		};
+		const handlePointerLeave = () => {
+			hovering = false;
+			logoHitArea.style.setProperty('--proximity-scale', '1');
+			logoHitArea.style.setProperty('--proximity-glow', '0px');
+			logoHitArea.style.setProperty('--proximity-alpha', '0');
 		};
 		/** @param {MouseEvent} event */
 		const handlePointerLeaveWindow = (event) => {
-			if (event.relatedTarget === null) easeProximity?.(1);
+			if (event.relatedTarget === null) {
+				logoHitArea.style.setProperty('--proximity-scale', '1');
+				logoHitArea.style.setProperty('--proximity-glow', '0px');
+				logoHitArea.style.setProperty('--proximity-alpha', '0');
+			}
 		};
 		const handleVisibility = () => {
 			if (document.visibilityState === 'visible' && !performing) scheduleAmbientTrick(true);
@@ -203,12 +222,16 @@
 		const handleAfterPrint = () => scheduleAmbientTrick(true);
 		document.addEventListener('visibilitychange', handleVisibility);
 		window.addEventListener('pointermove', handlePointerMove, { passive: true });
+		logoHitArea?.addEventListener('pointerenter', handlePointerEnter);
+		logoHitArea?.addEventListener('pointerleave', handlePointerLeave);
 		window.addEventListener('mouseout', handlePointerLeaveWindow);
 		window.addEventListener('beforeprint', handleBeforePrint);
 		window.addEventListener('afterprint', handleAfterPrint);
 		return () => {
 			document.removeEventListener('visibilitychange', handleVisibility);
 			window.removeEventListener('pointermove', handlePointerMove);
+			logoHitArea?.removeEventListener('pointerenter', handlePointerEnter);
+			logoHitArea?.removeEventListener('pointerleave', handlePointerLeave);
 			window.removeEventListener('mouseout', handlePointerLeaveWindow);
 			window.removeEventListener('beforeprint', handleBeforePrint);
 			window.removeEventListener('afterprint', handleAfterPrint);
@@ -216,8 +239,8 @@
 	});
 
 	onDestroy(() => {
+		if (typeof window === 'undefined') return;
 		window.clearTimeout(ambientTimer);
-		gsap.killTweensOf(logoHitArea);
 		replacingTrick = true;
 		activeTimeline?.kill();
 	});
@@ -242,20 +265,21 @@
 {/snippet}
 
 {#if interactive}
-	<button bind:this={logoHitArea} class="lens-logo" type="button" style:--logo-delay={delay} aria-label={label} onclick={(event) => { event.stopPropagation(); playTrick(); }}>
+	<button bind:this={logoHitArea} class="lens-logo" class:is-hovering={hovering} type="button" style:--logo-delay={delay} aria-label={label} onclick={(event) => { event.stopPropagation(); playTrick(); }}>
 		{@render logoMark()}
 	</button>
 {:else}
-	<span bind:this={logoHitArea} class="lens-logo" style:--logo-delay={delay} aria-hidden="true">
+	<span bind:this={logoHitArea} class="lens-logo" class:is-hovering={hovering} style:--logo-delay={delay} aria-hidden="true">
 		{@render logoMark()}
 	</span>
 {/if}
 
 <style>
-	.lens-logo{display:block;width:100%;aspect-ratio:60/44;margin:0;padding:0;border:0;background:none;color:inherit;cursor:pointer;overflow:visible;position:relative;line-height:0;touch-action:manipulation;transform-origin:center;will-change:transform}
+	.lens-logo{display:block;width:100%;aspect-ratio:60/44;margin:0;padding:0;border:0;background:none;color:inherit;cursor:pointer;overflow:visible;position:relative;line-height:0;touch-action:manipulation;transform:scale(var(--proximity-scale,1));filter:drop-shadow(0 0 var(--proximity-glow,0px) rgba(255,91,26,var(--proximity-alpha,0)));transform-origin:center;transition:transform .18s cubic-bezier(.2,.85,.25,1),filter .22s ease;will-change:transform,filter}
 	.lens-logo:focus-visible{outline:2px solid #ff5b1a;outline-offset:5px;border-radius:50%}
 	.lens-logo svg{display:block;width:100%;height:100%;overflow:visible;transition:filter .25s ease}
-	.lens-logo:hover svg{filter:drop-shadow(0 0 6px rgba(255,91,26,.3))}
+	.lens-logo:hover svg{filter:drop-shadow(0 0 9px rgba(255,91,26,.38))}
+	.lens-logo.is-hovering svg{filter:drop-shadow(0 0 10px rgba(255,91,26,.42))}
 	.lens-ring,.lens-aperture,.lens-glint,.lens-flash{transform-box:fill-box;transform-origin:center}
 	.lens-ring,.lens-aperture,.lens-glint{animation-duration:5.8s;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-delay:var(--logo-delay)}
 	.lens-ring{fill:none;stroke:#f1eee7;stroke-width:2.5;animation-name:lens-breathe-ring}
@@ -268,7 +292,10 @@
 	.rest-hover{animation:logo-rest-hover 5.2s ease-in-out var(--logo-delay) infinite}
 	.rest-drift{animation:logo-rest-drift 8.4s ease-in-out var(--logo-delay) infinite}
 	.rest-glow{animation:logo-rest-glow 6.8s ease-in-out var(--logo-delay) infinite}
-	.is-performing,.is-performing .lens-ring,.is-performing .lens-aperture,.is-performing .lens-glint{animation-play-state:paused}
+	/* A paused CSS animation still owns `transform` in the cascade and masks
+	   GSAP's inline transforms. Remove it for the brief trick, then let the
+	   normal rest animation resume when the timeline completes. */
+	.is-performing,.is-performing .lens-ring,.is-performing .lens-aperture,.is-performing .lens-glint{animation:none!important}
 	.sr-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 	@keyframes lens-breathe-ring{0%,100%{opacity:.88;transform:scale(1)}50%{opacity:1;transform:scale(1.022)}}
 	@keyframes lens-breathe-aperture{0%,100%{transform:rotate(-1.5deg) scale(.97)}50%{transform:rotate(2.5deg) scale(1.025)}}
