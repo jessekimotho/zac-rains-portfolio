@@ -904,7 +904,7 @@
 	.business-card.card-flipping{animation:card-shadow-flip .9s ease both}
 	.card-face::before{transform:translate3d(calc(var(--card-shift-x) * -0.55),calc(var(--card-shift-y) * -0.55),0) scale(1.04)}
 	.business-card:hover .card-face::before{transform:translate3d(calc(var(--card-shift-x) * -0.55),calc(var(--card-shift-y) * -0.55),0) scale(1.07)}
-	.card-face::after{background:radial-gradient(circle at var(--card-glare-x) var(--card-glare-y),rgba(255,255,255,.16),transparent 36%)}
+	.card-face::after{background:none}
 	/* Keep the type in a light 2D path: a small vertical parallax reads as depth
 	   without applying the card's perspective transform to every glyph. */
 	.card-face > *{transform:translateY(calc(var(--card-shift-y) * .32));transition:transform .18s ease-out}

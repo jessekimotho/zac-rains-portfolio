@@ -1,6 +1,5 @@
 <script>
 	import { onDestroy, onMount } from 'svelte';
-	import { gsap } from 'gsap';
 
 	export let label = 'Zac Rains camera aperture logo. Click for a photography trick.';
 	export let delay = '0s';
@@ -19,10 +18,13 @@
 	let lastRandomTrick = -1;
 	let replacingTrick = false;
 	let hovering = false;
+	/** @type {typeof import('gsap').gsap | undefined} */
+	let gsap;
 	/** @type {ReturnType<typeof setTimeout> | undefined} */
 	let ambientTimer;
 
 	const scheduleAmbientTrick = (firstRun = false) => {
+		if (!gsap) return;
 		window.clearTimeout(ambientTimer);
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 		const wait = firstRun ? gsap.utils.random(1800, 3200) : gsap.utils.random(4200, 7600);
@@ -33,7 +35,7 @@
 	};
 
 	const finishTrick = () => {
-		if (!logo) return;
+		if (!logo || !gsap) return;
 		const parts = [logo, ...logo.querySelectorAll('.lens-ring,.lens-glass,.lens-aperture,.lens-glint,.lens-flash')];
 		gsap.set(parts, { clearProps: 'transform,opacity,filter' });
 		performing = false;
@@ -42,6 +44,7 @@
 	};
 
 	const playTrick = (randomize = false) => {
+		if (!gsap) return;
 		// Ambient motion respects the user's preference, but an intentional click
 		// still needs a clear response so the control never feels broken.
 		if (!logo || (randomize && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
@@ -167,12 +170,18 @@
 		}
 		const trick = tricks[selectedIndex];
 		trickName = `${trick.name}. ${selectedIndex + 1} of ${tricks.length}.`;
-		activeTimeline = gsap.timeline({ defaults: { transformOrigin: 'center center' }, onComplete: finishTrick, onInterrupt: finishTrick });
-		trick.run(activeTimeline);
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) activeTimeline.timeScale(1.8);
+		const timeline = gsap.timeline({ defaults: { transformOrigin: 'center center' }, onComplete: finishTrick, onInterrupt: finishTrick });
+		activeTimeline = timeline;
+		trick.run(timeline);
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) timeline.timeScale(1.8);
 	};
 
 	onMount(() => {
+		let cleanup = () => {};
+		let destroyed = false;
+		import('gsap').then(({ gsap: gsapInstance }) => {
+			if (destroyed) return;
+			gsap = gsapInstance;
 		restMode = gsap.utils.random(1, 5, 1);
 		scheduleAmbientTrick(true);
 		/** @param {PointerEvent} event */
@@ -227,7 +236,7 @@
 		window.addEventListener('mouseout', handlePointerLeaveWindow);
 		window.addEventListener('beforeprint', handleBeforePrint);
 		window.addEventListener('afterprint', handleAfterPrint);
-		return () => {
+		cleanup = () => {
 			document.removeEventListener('visibilitychange', handleVisibility);
 			window.removeEventListener('pointermove', handlePointerMove);
 			logoHitArea?.removeEventListener('pointerenter', handlePointerEnter);
@@ -235,6 +244,11 @@
 			window.removeEventListener('mouseout', handlePointerLeaveWindow);
 			window.removeEventListener('beforeprint', handleBeforePrint);
 			window.removeEventListener('afterprint', handleAfterPrint);
+		};
+		});
+		return () => {
+			destroyed = true;
+			cleanup();
 		};
 	});
 
@@ -275,11 +289,10 @@
 {/if}
 
 <style>
-	.lens-logo{display:block;width:100%;aspect-ratio:60/44;margin:0;padding:0;border:0;background:none;color:inherit;cursor:pointer;overflow:visible;position:relative;line-height:0;touch-action:manipulation;transform:scale(var(--proximity-scale,1));filter:drop-shadow(0 0 var(--proximity-glow,0px) rgba(255,91,26,var(--proximity-alpha,0)));transform-origin:center;transition:transform .18s cubic-bezier(.2,.85,.25,1),filter .22s ease;will-change:transform,filter}
+	.lens-logo{display:block;width:100%;aspect-ratio:60/44;margin:0;padding:0;border:0;background:none;color:inherit;cursor:pointer;overflow:visible;position:relative;line-height:0;touch-action:manipulation}
 	.lens-logo:focus-visible{outline:2px solid #ff5b1a;outline-offset:5px;border-radius:50%}
 	.lens-logo svg{display:block;width:100%;height:100%;overflow:visible;transition:filter .25s ease}
-	.lens-logo:hover svg{filter:drop-shadow(0 0 9px rgba(255,91,26,.38))}
-	.lens-logo.is-hovering svg{filter:drop-shadow(0 0 10px rgba(255,91,26,.42))}
+	.lens-logo:hover svg,.lens-logo.is-hovering svg{filter:none}
 	.lens-ring,.lens-aperture,.lens-glint,.lens-flash{transform-box:fill-box;transform-origin:center}
 	.lens-ring,.lens-aperture,.lens-glint{animation-duration:5.8s;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-delay:var(--logo-delay)}
 	.lens-ring{fill:none;stroke:#f1eee7;stroke-width:2.5;animation-name:lens-breathe-ring}
