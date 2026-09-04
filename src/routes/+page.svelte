@@ -1,6 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
 	import LensLogo from '$lib/LensLogo.svelte';
+	import { getLocalContent, loadContent } from '$lib/content.js';
+	import StudioBar from '$lib/StudioBar.svelte';
 
 	const siteUrl = 'https://rainsphotography.com';
 	const pageUrl = `${siteUrl}/`;
@@ -72,7 +74,8 @@
 	};
 	// Curated from the compressed newer set so the gallery loads quickly without
 	// asking the browser to decode the full-resolution archive files.
-	const reel = [
+	/** @type {Array<[string, string, string]>} */
+	let reel = [
 		['newer/optimized/Fuller -051.jpg', '01 / Winter bride', 'weddings / wisconsin'],
 		['newer/optimized/Fuller -024.jpg', '02 / The groomsmen', 'people / 2025'],
 		['newer/optimized/Fuller -041.jpg', '03 / Getting ready', 'weddings / 2025'],
@@ -87,6 +90,26 @@
 		['newer/optimized/Fuller -001.jpg', '12 / Before the vows', 'details / weddings'],
 		['newer/optimized/D7B805B9-7968-4B1C-B69A-32EA8EFD1393-Topaz-Gigapixel-4X-2.jpg', '13 / The photographer', 'portrait / zac rains']
 	];
+
+	/** @param {any[]} projects @returns {Array<[string, string, string]>} */
+	const managedReel = (projects) => /** @type {Array<[string, string, string]>} */ (projects
+		.map((project, index) => {
+			const image = project.cover_image || project.project_images?.[0]?.image_url;
+			return image ? [image, `${String(index + 1).padStart(2, '0')} / ${project.title}`, `${project.category || 'selected work'}${project.full_resolution_link ? ' ↗' : ''}`] : null;
+		})
+		.filter(Boolean));
+
+	/** @param {any} settings */
+	const applyAppearance = (settings) => {
+		if (typeof document === 'undefined') return;
+		const root = document.documentElement;
+		root.style.setProperty('--site-accent', settings.accentColor);
+		root.style.setProperty('--site-background', settings.backgroundColor);
+		root.style.setProperty('--site-paper', settings.paperColor);
+		root.style.setProperty('--site-body-font', `'${settings.bodyFont}', sans-serif`);
+		root.style.setProperty('--site-mono-font', `'${settings.monoFont}', monospace`);
+		root.dataset.imageTreatment = settings.imageTreatment;
+	};
 	let cardFlipped = false;
 	let cardFlipping = false;
 	/** @type {ReturnType<typeof setTimeout> | undefined} */
@@ -146,6 +169,17 @@
 		let cleanup;
 		let destroyed = false;
 		heroSlides = shuffleSlides(heroSlides);
+		const localContent = getLocalContent();
+		applyAppearance(localContent.settings);
+		if (localContent.projects.length) {
+			const localReel = managedReel(localContent.projects);
+			if (localReel.length) reel = localReel;
+		}
+		loadContent().then((liveContent) => {
+			applyAppearance(liveContent.settings);
+			const liveReel = managedReel(liveContent.projects);
+			if (liveReel.length) reel = liveReel;
+		}).catch(() => {});
 
 		Promise.all([import('gsap'), import('gsap/ScrollTrigger')]).then(([gsapModule, scrollTriggerModule]) => {
 			if (destroyed) return;
@@ -364,7 +398,7 @@
 	});
 </script>
 
-<svelte:head>
+	<svelte:head>
 	<title>{pageTitle}</title>
 	<meta name="description" content={pageDescription} />
 	<meta name="author" content="Zac Rains" />
@@ -415,7 +449,8 @@
 			priceRange: '$$'
 		})}
 	</script>
-</svelte:head>
+	</svelte:head>
+	<StudioBar />
 
 	<div class="shell">
 		<div class="ambient-background" aria-hidden="true"></div>
