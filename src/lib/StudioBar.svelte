@@ -14,6 +14,7 @@
 	let notice = '';
 	let busy = false;
 
+	//mount
 	onMount(async () => {
 		content = getLocalContent();
 		if (!supabase) return;
