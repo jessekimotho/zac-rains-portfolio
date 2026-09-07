@@ -10,7 +10,7 @@
 
 	/** @param {string} filename */
 	const asset = (filename) => `/${filename.split('/').map(encodeURIComponent).join('/')}`;
-	const portrait = asset('707453577_17965332306081022_639360383094076295_n.jpg');
+	const portrait = asset('newer/optimized/Zac-Cover.jpeg');
 	/** @type {Array<[string, string]>} */
 	let heroSlides = [
 		// Keep the hero selection separate from the lower Selected Work reel so
